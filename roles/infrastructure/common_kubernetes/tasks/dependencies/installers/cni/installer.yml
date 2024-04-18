@@ -5,7 +5,7 @@
       become: true
       ansible.builtin.file:
         path: "{{ runtime['cni']['install_dir'] }}"
-        state: directory
+        state: "{{ directory_state }}"
         mode: '0755'
 
     - name: install the latest CNI release

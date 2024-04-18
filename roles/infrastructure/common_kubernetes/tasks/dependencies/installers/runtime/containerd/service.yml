@@ -3,7 +3,7 @@
   become: true
   ansible.builtin.file:
     path: "{{ systemd['containerd_service']['install_dir'] }}"
-    state: directory
+    state: "{{ directory_state }}"
     mode: '0755'
 
 - name: Install the containerd service

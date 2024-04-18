@@ -1,2 +1,4 @@
 ---
 #
+deployment_state: absent
+directory_state: absent

@@ -5,9 +5,6 @@
 - name: Install dependencies
   ansible.builtin.include_tasks: dependencies/dependencies.yml
 
-# - name: Ensure all prerequisites are met
-#   ansible.builtin.include_tasks: prerequisites/connection/etcd01_ssh_keys.yml
-
 - name: Trigger all handlers first
   ansible.builtin.meta: flush_handlers
 

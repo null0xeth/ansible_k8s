@@ -22,7 +22,7 @@
           become: true
           ansible.builtin.apt_repository:
             repo: "{{ common_kubernetes_repository['repo_cmd'] }}"
-            state: present
+            state: "{{ deployment_state }}"
             filename: "{{ common_kubernetes_repository['repo_file_name'] }}"
             update_cache: true
 
