@@ -1,0 +1,45 @@
+---
+file_mappings:
+  home:
+    zshrc: "{{ global_home_dir }}/.zshrc"
+  system:
+    sudoers: "{{ global_sys_dir }}/sudoers"
+  tmp:
+    starship: "{{ global_tmp_dir }}/starship_install.sh"
+
+sub_file_mappings:
+  system:
+    python:
+      externally_managed: "{{ mapped_directories['system']['python']['install_dir'] }}/EXTERNALLY-MANAGED"
+    golang:
+      binary:  "{{ mapped_directories['system']['golang'] }}/bin"
+    modules_load_d:
+      k8s_conf: "{{ sub_mapping['system']['modules_load_d'] }}/k8s.conf"
+    sysctl_d:
+      k8s_conf: "{{ sub_mapping['system']['sysctl_d'] }}/k8s.conf"
+    sudoers_d:
+      passwordless_sudo: "{{ sub_mapping['system']['sudoers_d'] }}/dont-prompt-ubuntu_user-for-sudo-password"
+    kubernetes:
+      core:
+        kubeadm: "{{ global_home_dir }}/kubeadm-config.yaml" # ok
+        adminconf: "{{ sub_mapping['system']['kubernetes'] }}/admin.conf" #ok
+  home:
+    kube:
+      config: "{{ sub_mapping['home']['kube'] }}/config" #ok
+    omz:
+      custom:
+        add_go_to_path: "{{ directory_mapping['home']['omz']['custom'] }}/go_binary.zsh"
+        plugins:
+          autosuggestions: "{{ mapped_directories['home']['omz']['plugins']['autosuggestions'] }}/zsh-autosuggestions.plugin.zsh"
+          completions: "{{ mapped_directories['home']['omz']['plugins']['completions'] }}/zsh-completions.plugin.zsh"
+          syntaxhl: "{{ mapped_directories['home']['omz']['plugins']['syntaxhl'] }}/zsh-syntax-highlighting.plugin.zsh"
+          autoupdate: "{{ mapped_directories['home']['omz']['plugins']['autoupdate'] }}/autoupdate.plugin.zsh"
+
+binary_mapping:
+  shell:
+    starship: "{{ directory_mapping['usr']['local']['bin'] }}/starship"
+  sysutils:
+    eza: "{{ directory_mapping['usr']['local']['bin'] }}/eza"
+    procs: "{{ directory_mapping['usr']['local']['bin'] }}/procs"
+    fd: "{{ sub_mapping['usr']['bin'] }}/fd"
+    fd_find: "{{ sub_mapping['usr']['bin'] }}/fdfind"

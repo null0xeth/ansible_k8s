@@ -1,0 +1,11 @@
+---
+- name: Get certmanager chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['certmanager']['chart'] }}"
+    release_namespace: "{{ helm_charts['certmanager']['namespace'] }}"
+  register: certmanager_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    certmanager_deployed: "{{ true if certmanager_status.status is defined and certmanager_status.status.status == 'deployed' else false }}"
+

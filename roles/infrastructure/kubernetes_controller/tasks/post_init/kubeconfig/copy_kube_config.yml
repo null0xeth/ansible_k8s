@@ -1,0 +1,11 @@
+- name: "Copy the kubernetes admin.conf to {{ sub_file_mappings['home']['kube']['config'] }}"
+  become: true
+  ansible.builtin.fetch:
+    src: "{{ sub_file_mappings['system']['kubernetes']['core']['adminconf'] }}"
+    dest: "{{ sub_file_mappings['home']['kube']['config'] }}"
+    mode: '0755'
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+    flat: true
+
+

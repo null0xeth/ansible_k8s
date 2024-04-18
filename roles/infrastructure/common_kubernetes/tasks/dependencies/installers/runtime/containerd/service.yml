@@ -1,0 +1,20 @@
+---
+- name: Create the service directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ systemd['containerd_service']['install_dir'] }}"
+    state: directory
+    mode: '0755'
+
+- name: Install the containerd service
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ systemd['containerd_service']['download'] }}"
+    dest: "{{ systemd['containerd_service']['install_dir'] }}"
+    mode: '0644'
+  notify:
+    - enable containerd
+
+- name: Ensure all notified handlers are executed
+  become: true
+  ansible.builtin.meta: flush_handlers

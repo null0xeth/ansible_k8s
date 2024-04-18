@@ -1,0 +1,24 @@
+---
+- name: Install the latest version of Eza
+  block:
+    - name: Get all Eza releases
+      become: true
+      ansible.builtin.uri:
+        url: "{{ sysutils['eza']['releases'] }}"
+        return_content: true
+      register: eza_release
+
+    - name: Set latest Eza release version
+      become: true
+      ansible.builtin.set_fact:
+        eza_latest_version: "{{ eza_release.json.tag_name }}"
+
+    - name: "Install version {{ eza_latest_version }}"
+      become: true
+      ansible.builtin.unarchive:
+        src: "{{ sysutils['eza']['download'] }}"
+        dest: "{{ sysutils['eza']['install_dir'] }}"
+        remote_src: true
+        mode: '0755'
+        owner: "{{ global_primary_user }}"
+        group: "{{ global_primary_user }}"

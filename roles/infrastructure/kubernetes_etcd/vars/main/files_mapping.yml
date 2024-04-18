@@ -1,0 +1,11 @@
+---
+etcd_sub_file_mappings:
+  system:
+    systemd:
+      kubelet:
+        config: "{{ directory_mapping['system']['systemd']['kubelet'] }}/kubelet.conf" #ok
+        etcd_manager: "{{ directory_mapping['system']['systemd']['kubelet'] }}/20-etcd-service-manager.conf" #ok
+    kubernetes:
+      etcd:
+        config: "{{ mapped_directories['system']['kubernetes']['manifests'] }}/etcd.yaml" #ok
+

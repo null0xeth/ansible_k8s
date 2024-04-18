@@ -1,0 +1,40 @@
+---
+- name: Check if the dependency check script is present
+  become: true
+  ansible.builtin.stat:
+    path: "{{ longhorn_check_swag }}"
+  register: env_check_script
+
+- name: Fetch the dependency checker script
+  become: true
+  when: not env_check_script.stat.exists
+  ansible.builtin.get_url:
+    url: "{{ support_source_map['check_longhorn_deps'] }}"
+    dest: "{{ longhorn_check_swag }}"
+    mode: '0755'
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+
+- name: Run the environment check and register the result
+  ansible.builtin.command: "{{ longhorn_check_swag }}"
+  register: dep_check
+  failed_when: "'Errno' in dep_check.msg"
+
+- name: Register the dependency check as ansible fact
+  ansible.builtin.set_fact:
+    longhorn_deps_ready: |
+      {%- if not 'ERROR' in dep_check.stdout -%}
+        {{ true|bool }}
+      {%- else -%}
+        {{ false|bool }}
+      {%- endif -%}
+
+- name: Set missing dependency fact
+  when: not longhorn_deps_ready
+  ansible.builtin.set_fact:
+    longhorn_missing_deps: |
+      {%- for line in dep_check.stdout_lines %}
+        {%- if 'ERROR' in line %}
+          {{ line | regex_replace(regex_filter, regex_filter_to) }}
+        {%- endif %}
+      {%- endfor -%}

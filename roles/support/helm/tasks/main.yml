@@ -1,0 +1,13 @@
+---
+# tasks file for helm
+- name: "Install Helm"
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ support_deployments['helm']['download'] }}"
+    dest: "{{ support_deployments['helm']['install_dir'] }}"
+    remote_src: true
+    mode: '0755'
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+    extra_opts: [--strip-components=1]
+    exclude: ["LICENSE", "README.md"]

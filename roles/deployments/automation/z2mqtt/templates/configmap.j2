@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zigbee2mqtt-config
+  namespace: frontend
+  labels:
+    app: zigbee2mqtt
+data:
+  configuration.yaml: |-
+    homeassistant: false
+
+    permit_join: true
+
+    mqtt:
+      base_topic: zigbee2mqtt
+      user: "{{ mqtt_username }}"
+      password: "{{ mqtt_password }}"
+      server: 'mqtt://mosquitto:1883'
+
+    frontend: true
+
+    serial:
+      port: /dev/ttyACM0
+
+    advanced:
+      pan_id: GENERATE
+      network_key: GENERATE
+      ext_pan_id: GENERATE
+
+    availability: true
+

@@ -1,0 +1,7 @@
+---
+- name: Check if CNI is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ runtime['cni']['binary_path'] }}"
+  register: has_cni
+

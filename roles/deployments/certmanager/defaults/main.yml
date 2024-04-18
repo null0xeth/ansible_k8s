@@ -1,0 +1,3 @@
+---
+# defaults file for certmanager
+deployment_state: present

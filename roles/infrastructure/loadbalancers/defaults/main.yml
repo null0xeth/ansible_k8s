@@ -1,0 +1,7 @@
+---
+role_name: loadbalancers
+role_template_dir: "{{ role_path }}/templates"
+
+lb_templates:
+  haproxy: "{{ role_template_dir }}/haproxy.conf.j2"
+  keepalived: "{{ role_template_dir }}/keepalived.conf.j2"

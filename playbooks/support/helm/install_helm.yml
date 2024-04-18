@@ -1,0 +1,6 @@
+---
+- name: Install the Helm package manager
+  hosts: deployments
+  tasks:
+    - ansible.builtin.include_role:
+        name: support/helm

@@ -1,0 +1,13 @@
+---
+- name: Fetch and register all etcd member ip addresses
+  ansible.builtin.set_fact:
+    etcd_ips: "{{ groups['etcd'] | map('extract', hostvars) | map(attribute='ansible_host') }}"
+
+- name: Create the kubeadm-config file
+  become: true
+  ansible.builtin.template:
+    src: "{{ templates['kubeadmcfg_controlplane'] }}"
+    dest: "{{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
+    mode: '0644'
+
+

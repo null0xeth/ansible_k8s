@@ -1,0 +1,12 @@
+---
+- name: Generate the routes.yaml file
+  ansible.builtin.template:
+    src: templates/routes.j2
+    dest: "{{ global_home_dir }}/routes.yaml"
+
+- name: Read definition template file from the Ansible controller file system
+  kubernetes.core.k8s:
+    state: "{{ deployment_state }}"
+    src: "{{ global_home_dir }}/routes.yaml"
+
+

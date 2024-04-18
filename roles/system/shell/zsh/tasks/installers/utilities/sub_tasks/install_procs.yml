@@ -1,0 +1,23 @@
+---
+- name: "Install the latest version of Procs"
+  block:
+    - name: Get all Procs releases
+      become: true
+      ansible.builtin.uri:
+        url: "{{ sysutils['procs']['releases'] }}"
+        return_content: true
+      register: procs_release
+
+    - name: Set latest Procs release version
+      become: true
+      ansible.builtin.set_fact:
+        procs_latest_version: "{{ procs_release.json.tag_name }}"
+
+    - name: "Install version {{ procs_latest_version }}"
+      become: true
+      ansible.builtin.unarchive:
+        src: "{{ sysutils['procs']['download'] }}"
+        dest: "{{ sysutils['procs']['install_dir'] }}"
+        remote_src: true
+        mode: '0755'
+

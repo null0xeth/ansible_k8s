@@ -1,0 +1,27 @@
+---
+- name: Run the preliminary system checks
+  ansible.builtin.include_tasks: checks/run_checks.yml
+
+- name: Deploy the latest version of Certmanager
+  when: not certmanager_deployed
+  block:
+    - name: Install the reflector child chart
+      ansible.builtin.include_tasks: dependencies/reflector.yml
+
+    - name: Add the Certmanager chart repo
+      ansible.builtin.include_tasks: chart/add_helm_chart.yml
+
+    - name: Deploy the latest version of the certmanager CRDs
+      ansible.builtin.include_tasks: chart/deploy_crds.yml
+
+    - name: Deploy the latest version of the certmanager chart
+      ansible.builtin.include_tasks: chart/deploy_chart.yml
+
+- name: Create the cloudflare token secret
+  ansible.builtin.include_tasks: config/cf_token.yml
+
+- name: Create the cloudflare cluster issuer
+  ansible.builtin.include_tasks: config/cluster_issuer.yml
+
+- name: Create the cloudflare ssl certificate
+  ansible.builtin.include_tasks: config/certificate.yml

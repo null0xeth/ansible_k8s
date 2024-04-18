@@ -1,0 +1,3 @@
+---
+- name: Initialize the kubernetes worker nodes
+  ansible.builtin.include_tasks: init_worker_nodes.yml

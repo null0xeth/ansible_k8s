@@ -1,0 +1,12 @@
+---
+- name: Apply the dependency installer scripts
+  become: true
+  loop: "{{ support_source_map | list }}"
+  when: item is match("longhorn_*")
+  kubernetes.core.k8s:
+    kubeconfig: "{{ sub_file_mappings['home']['kube']['config'] }}"
+    namespace: default
+    state: "{{ deployment_state }}"
+    src: "{{ support_source_map[item] }}"
+    apply: true
+    wait: true

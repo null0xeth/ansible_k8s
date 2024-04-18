@@ -1,0 +1,8 @@
+---
+- name: Provision the first controlplane
+  when: inventory_hostname in global_controlplane_hosts[0]
+  ansible.builtin.include_tasks: primary/provision_primary_plane.yml
+
+- name: Provision the secondary controlplanes
+  when: inventory_hostname not in global_controlplane_hosts[0]
+  ansible.builtin.include_tasks: secondary/provision_secondary_planes.yml

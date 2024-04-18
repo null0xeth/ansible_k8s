@@ -1,0 +1,51 @@
+---
+#tasks file for operator
+# - name: Install DirectPV
+#   ansible.builtin.include_tasks: directpv/install.yml
+
+# - name: Update Krew
+#   ansible.builtin.shell: "./kubectl-krew update"
+#   args:
+#     chdir: "{{ krew_bin_dir }}"
+
+# - name: Install Minio Krew plugin
+#   ansible.builtin.shell: "{{ krew_binary }} install minio"
+#   register: minio_install
+
+# - name: Init Minio
+#   ansible.builtin.shell: "./kubectl-minio init"
+#   args:
+#     chdir: "{{ krew_bin_dir }}"
+#   register: minio_init
+
+# - ansible.builtin.debug:
+#     msg: "{{ minio_init }}"
+
+- name: Fetch the minio binary
+  become: true
+  ansible.builtin.get_url:
+    url: https://github.com/minio/operator/releases/download/v5.0.14/kubectl-minio_5.0.14_linux_amd64
+    dest: /usr/local/bin/kubectl-minio
+    mode: '0755'
+    owner: null0x
+    group: null0x
+
+- name: Init minio
+  ansible.builtin.shell: kubectl minio init
+  register: chonkus
+
+- ansible.builtin.debug:
+    msg: "{{ chonkus }}"
+# - name: Create the kubectl binary
+#   ansible.builtin.shell: ./kubectl-minio_5.0.14_linux_amd64 -o kubectl-minio
+#   args:
+#     chdir: /tmp
+
+# - name: Move the binary to /usr/local/bin
+#   ansible.builtin.copy:
+#     src: /tmp/kubectl-minio_5.0.14_linux_amd64
+#     dest: /usr/local/bin/kubectl-minio
+#     mode: '0755'
+#     owner: null0x
+#     group: null0x
+#     remote_src: true

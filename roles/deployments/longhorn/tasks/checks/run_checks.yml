@@ -1,0 +1,7 @@
+---
+- name: Check if longhorn is already deployed
+  ansible.builtin.include_tasks: deployment_status.yml
+
+- name: Check if all dependencies have been installed
+  #when: not longhorn_deployed
+  ansible.builtin.include_tasks: env_check.yml

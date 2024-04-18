@@ -1,0 +1,6 @@
+---
+- name: Check if passwordless sudo is already enabled
+  become: true
+  ansible.builtin.stat:
+    path: "{{ sub_file_mappings['system']['sudoers_d']['passwordless_sudo'] }}"
+  register: passwordless_active

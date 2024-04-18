@@ -1,0 +1,6 @@
+---
+- name: Deploy mosquitto
+  hosts: controlplane01
+  tasks:
+    - ansible.builtin.include_role:
+        name: deployments/automation/mosquitto

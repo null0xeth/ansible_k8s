@@ -1,0 +1,13 @@
+---
+lb_sub_mapping:
+  tmp:
+    keepalived: "{{ global_tmp_dir }}/keepalived" #ok
+  system:
+    haproxy: "{{ global_sys_dir }}/haproxy" #ok
+    keepalived: "{{ global_sys_dir }}/keepalived" #ok
+
+lb_directory_mapping:
+  var:
+    lib:
+      haproxy: "{{ sub_mapping['var']['lib'] }}/haproxy" #ok
+

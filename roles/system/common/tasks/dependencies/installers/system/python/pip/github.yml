@@ -1,0 +1,5 @@
+---
+- name: Install python modules
+  become: true
+  ansible.builtin.pip:
+    name: github3.py

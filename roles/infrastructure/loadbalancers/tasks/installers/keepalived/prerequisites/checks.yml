@@ -1,0 +1,7 @@
+---
+- name: Check if Keepalived is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ lb_sub_file_mappings['system']['keepalived']['config'] }}"
+  register: has_keepalived
+

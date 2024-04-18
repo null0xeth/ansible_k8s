@@ -1,0 +1,23 @@
+---
+- name: Remove directories for Keepalived
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+    - "{{ lb_sub_mapping['system']['keepalived'] }}"
+
+- name: Create directories for Keepalived
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    recurse: true
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+    - "{{ lb_sub_mapping['system']['keepalived'] }}"
+

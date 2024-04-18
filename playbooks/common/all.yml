@@ -1,0 +1,8 @@
+---
+- name: Install common dependencies
+  hosts: all
+  tasks:
+    - ansible.builtin.include_role:
+        name: system/common
+    - ansible.builtin.include_role:
+        name: system/shell/zsh

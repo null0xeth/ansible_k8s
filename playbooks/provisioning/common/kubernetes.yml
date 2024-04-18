@@ -1,0 +1,6 @@
+---
+- name: Install common dependencies
+  hosts: cluster_internal
+  tasks:
+    - ansible.builtin.include_role:
+        name: infrastructure/common_kubernetes

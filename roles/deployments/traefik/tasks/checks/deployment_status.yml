@@ -1,0 +1,13 @@
+---
+- name: Get traefik chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['traefik']['chart'] }}"
+    release_namespace: "{{ helm_charts['traefik']['namespace'] }}"
+  register: traefik_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    traefik_deployed: "{{ true if traefik_status.status is defined and traefik_status.status.status == 'deployed' and deployment_state == 'present' else false }}"
+
+- ansible.builtin.debug:
+    msg: "{{ traefik_status }}"

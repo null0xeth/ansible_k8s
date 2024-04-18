@@ -1,0 +1,24 @@
+---
+# - name: Remove the previously provisioned kubernetes cluster
+#   import_playbook: ../../../kubernetes/wipe.yml
+
+- name: Install common dependencies on all servers
+  import_playbook: ../common/all.yml
+
+- name: Install all kubernetes dependencies
+  import_playbook: common/kubernetes.yml
+
+- name: Provision the TCP loadbalancers
+  import_playbook: loadbalancers/init_loadbalancers.yml
+
+- name: Provision the external ETCD cluster
+  import_playbook: etcd/init_etcd.yml
+
+- name: Provision the kubernetes controlplanes
+  import_playbook: controlplanes/init_controlplanes.yml
+
+- name: Configure cluster access on the ansible controller
+  import_playbook: controlplanes/init_ansible_controller.yml
+
+- name: Provision the kubernetes worker nodes
+  import_playbook: workers/init_workers.yml

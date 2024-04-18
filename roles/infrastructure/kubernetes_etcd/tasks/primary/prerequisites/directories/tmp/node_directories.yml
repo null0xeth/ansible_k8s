@@ -1,0 +1,10 @@
+---
+- name: Create the directories
+  become: true
+  ansible.builtin.file:
+    path: "{{ global_tmp_dir }}/{{ item }}/pki"
+    state: directory
+    mode: '0755'
+    recurse: true
+  loop: "{{ groups['etcd'] }}"
+

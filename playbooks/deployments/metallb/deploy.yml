@@ -1,0 +1,6 @@
+---
+- name: Deploy metallb
+  hosts: controlplane01
+  tasks:
+    - ansible.builtin.include_role:
+        name: deployments/metallb

@@ -1,0 +1,57 @@
+---
+# tasks file for krew
+- name: Create a krew directory in tmp
+  become: true
+  ansible.builtin.file:
+    path: /tmp/krew
+    recurse: true
+    state: directory
+    mode: '0755'
+    owner: null0x
+    group: null0x
+
+- name: Download the krew installer
+  ansible.builtin.unarchive:
+    src: "https://github.com/kubernetes-sigs/krew/releases/download/v0.4.4/krew-linux_amd64.tar.gz"
+    dest: "/tmp/krew"
+    extra_opts: [--strip-components=1]
+    remote_src: true
+
+- name: Install Krew
+  ansible.builtin.shell: ./krew-linux_amd64 install krew
+  register: krew_install
+  args:
+    chdir: /tmp/krew
+
+- ansible.builtin.debug:
+    msg: "{{ krew_install }}"
+
+# - name: Add Krew to zshrc
+#   ansible.builtin.blockinfile:
+#     path: "{{ file_mappings['home']['zshrc'] }}"
+#     block: |
+#       export KREW_ROOT="$HOME/.krew"
+#       [[ -d $KREW_ROOT/bin ]] && export PATH="$KREW_ROOT/bin:$PATH"
+#     state: present
+
+- name: Add krew to path
+  loop:
+    - 'export KREW_ROOT="$HOME/.krew"'
+    - '[[ -d $KREW_ROOT/bin ]] && export PATH="$KREW_ROOT/bin:$PATH"'
+  ansible.builtin.lineinfile:
+    path: "/home/null0x/.zshrc"
+    regexp: "^{{ item }}"
+    line: "{{ item }}"
+    state: present
+    insertbefore: EOF
+
+# - name: Move the krew binary to /usr/local/bin
+#   become: true
+#   ansible.builtin.copy:
+#     src:  "/tmp/krew/krew-linux_amd64"
+#     dest: /usr/local/bin/kubectl-krew
+#     mode: 0755
+#     owner: "{{ global_primary_user }}"
+#     group: "{{ global_primary_user }}"
+#     remote_src: true
+

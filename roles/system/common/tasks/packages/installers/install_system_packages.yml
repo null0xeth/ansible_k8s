@@ -1,0 +1,9 @@
+---
+- name: Install the latest version of all system packages
+  become: true
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    force_apt_get: true
+    name: "{{ common_package_mapping['system'] }}"
+

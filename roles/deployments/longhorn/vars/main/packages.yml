@@ -1,0 +1,13 @@
+---
+longhorn_packages:
+  - bash
+  - curl
+  - findmnt
+  - grep
+  - awk
+  - blkid
+  - lsblk
+  - jq
+  - mktemp
+  - sort
+  - printf

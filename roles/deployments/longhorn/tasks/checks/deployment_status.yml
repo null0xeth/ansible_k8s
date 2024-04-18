@@ -1,0 +1,14 @@
+---
+- name: Get Longhorn chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['longhorn']['name'] }}"
+    release_namespace: "{{ helm_charts['longhorn']['namespace'] }}"
+  register: longhorn_status
+
+- name: Set deployment status fact
+  when: longhorn_status.status is defined
+  ansible.builtin.set_fact:
+    longhorn_deployed: "{{ true if longhorn_status.status.status == 'deployed' else false }}"
+
+- ansible.builtin.debug:
+    msg: "{{ longhorn_deployed | default(false)}}"

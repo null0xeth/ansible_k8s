@@ -1,0 +1,6 @@
+---
+- name: Enable node monitoring
+  ansible.builtin.include_tasks: installers/monitoring/qemu/install_qemu_agent.yml
+
+- name: Install and configure system-level dependencies
+  ansible.builtin.include_tasks: installers/system/install_system_deps.yml

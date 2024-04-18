@@ -1,0 +1,4 @@
+---
+# defaults file for traefik
+template_dir_middleware: "{{ role_path }}/templates/middleware/"
+deployment_state: present

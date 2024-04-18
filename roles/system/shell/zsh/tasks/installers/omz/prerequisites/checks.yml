@@ -1,0 +1,7 @@
+---
+- name: Check if omz is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ shell['omz']['base']['binary_path'] }}"
+  register: omz_installed
+

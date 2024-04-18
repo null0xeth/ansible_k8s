@@ -1,0 +1,17 @@
+---
+- name: Install the required packages
+  ansible.builtin.include_tasks: packages/install_packages.yml
+
+- name: Install dependencies
+  ansible.builtin.include_tasks: dependencies/dependencies.yml
+
+# - name: Ensure all prerequisites are met
+#   ansible.builtin.include_tasks: prerequisites/connection/etcd01_ssh_keys.yml
+
+- name: Trigger all handlers first
+  ansible.builtin.meta: flush_handlers
+
+- name: Reboot all nodes to persist changes
+  become: true
+  ansible.builtin.reboot:
+    msg: "Rebooting node: {{ inventory_hostname }}"

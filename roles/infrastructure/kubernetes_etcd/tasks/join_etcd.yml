@@ -1,0 +1,58 @@
+---
+- name: Check if etcd is already initialized
+  ansible.builtin.include_tasks: common/prerequisites/checks/etcd_conf.yml
+
+- name: Check if kubeadm is already initialized
+  ansible.builtin.include_tasks: common/prerequisites/checks/kubernetes_cluster.yml
+
+- name: Move etcd certificates to the other etcd members
+  when: not etcd_initialized.stat.exists
+  ansible.builtin.include_tasks: secondary/certs/distribute_certs.yml
+
+- name: Fire up the other etcd members
+  when: not etcd_initialized.stat.exists
+  block:
+    - name: Check if the kubelet is already configured
+      ansible.builtin.include_tasks: common/prerequisites/checks/kubelet_config.yml
+
+    - name: Create the required directories
+      ansible.builtin.include_tasks: common/prerequisites/directories/kubernetes/create_kubernetes_dirs.yml
+
+    - name: Create config files for the kubelet
+      when: not has_kubelet_conf_file.stat.exists
+      ansible.builtin.include_tasks: common/prerequisites/config/kubelet/create_kubeletconf.yml
+
+    - name: Set current host
+      ansible.builtin.set_fact:
+        current_host: "{{ inventory_hostname }}"
+
+    - name: "Copy /pki from etcd01 to secondary etcd members"
+      become: true
+      ansible.posix.synchronize:
+        src: "/tmp/{{ current_host }}/pki"
+        dest: "{{ sub_mapping['system']['kubernetes'] }}/"
+        use_ssh_args: true
+        mode: push
+        recursive: true
+        rsync_path: "sudo rsync"
+      delegate_to: "{{ groups['etcd'][0] }}"
+
+    - name: "Copy kubeadm config files from etcd01 to secondary etcd"
+      become: true
+      ansible.posix.synchronize:
+        src: "/tmp/{{ current_host }}/kubeadmcfg.yaml"
+        dest: "{{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
+        use_ssh_args: true
+        mode: push
+        recursive: true
+        rsync_path: "sudo rsync"
+      delegate_to: "{{ groups['etcd'][0] }}"
+
+    - name: Initialize etcd on the secondary nodes
+      become: true
+      ansible.builtin.shell: "{{ kubernetes_commands['kubeadm']['generate']['join_etcd'] }}"
+      register: etcd_init
+
+    - ansible.builtin.debug:
+        msg: "{{ etcd_init }}"
+

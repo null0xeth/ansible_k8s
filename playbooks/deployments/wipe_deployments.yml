@@ -1,0 +1,18 @@
+---
+- name: Wipe deployments
+  hosts: controlplane01
+  vars:
+    deployment_state: absent
+  tasks:
+    - ansible.builtin.include_role:
+        name: deployments/automation/mosquitto
+    - ansible.builtin.include_role:
+        name: deployments/automation/z2mqtt
+    - ansible.builtin.include_role:
+        name: deployments/traefik
+    - ansible.builtin.include_role:
+        name: deployments/longhorn
+    - ansible.builtin.include_role:
+        name: deployments/certmanager
+    - ansible.builtin.include_role:
+        name: deployments/metallb

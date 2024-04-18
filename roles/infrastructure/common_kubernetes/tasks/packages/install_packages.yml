@@ -1,0 +1,19 @@
+---
+- name: Add all required repositories to APT
+  ansible.builtin.include_tasks: repositories/kubernetes.yml
+
+- name: Update and upgrade APT
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    force_apt_get: true
+    upgrade: dist
+
+- name: Install the latest version of all packages
+  become: true
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    force_apt_get: true
+    name: "{{ common_kubernetes_package_mapping['all'] }}"
+

@@ -1,0 +1,34 @@
+---
+- name: Set etcd file facts
+  loop: "{{ groups['etcd'] }}"
+  ansible.builtin.set_fact:
+    "{{ 'node_' + item + '_kubeadmcfg' }}": "{{ global_tmp_dir + '/' + item + '/kubeadmcfg.yaml' }}"
+
+- name: Create command list number 1
+  loop: "{{ lookup('inventory_hostnames', 'etcd', wantlist=True) }}"
+  when: not item in groups['etcd'][0]
+  ansible.builtin.set_fact:
+    "{{ 'node_' + item + '_cmds' }}":
+      - "kubeadm init phase certs etcd-server --config={{ lookup('ansible.builtin.vars', 'node_' + item + '_kubeadmcfg') }}"
+      - "kubeadm init phase certs etcd-peer --config={{ lookup('ansible.builtin.vars', 'node_' + item + '_kubeadmcfg') }}"
+      - "kubeadm init phase certs etcd-healthcheck-client --config={{ lookup('ansible.builtin.vars', 'node_' + item + '_kubeadmcfg') }}"
+      - "kubeadm init phase certs apiserver-etcd-client --config={{ lookup('ansible.builtin.vars', 'node_' + item + '_kubeadmcfg') }}"
+      - "cp -R {{ directory_mapping['system']['kubernetes']['pki'] }} {{ global_tmp_dir }}/{{ item }}"
+      - "find {{ directory_mapping['system']['kubernetes']['pki'] }} -not -name ca.crt -not -name ca.key -type f -delete"
+
+- name: Create command list number 2
+  ansible.builtin.set_fact:
+    "{{ 'node_' + groups['etcd'][0] + '_cmds' }}":
+      - "kubeadm init phase certs etcd-server --config=/tmp/{{ groups['etcd'][0] }}/kubeadmcfg.yaml"
+      - "kubeadm init phase certs etcd-peer --config=/tmp/{{ groups['etcd'][0] }}/kubeadmcfg.yaml"
+      - "kubeadm init phase certs etcd-healthcheck-client --config=/tmp/{{ groups['etcd'][0] }}/kubeadmcfg.yaml"
+      - "kubeadm init phase certs apiserver-etcd-client --config=/tmp/{{ groups['etcd'][0] }}/kubeadmcfg.yaml"
+
+- name: Combine both lists and register as fact
+  ansible.builtin.set_fact:
+    etcd_cmds:
+      - "{{ node_etcd03_cmds }}"
+      - "{{ node_etcd02_cmds }}"
+      - "{{ node_etcd01_cmds }}"
+      - "find /tmp/etcd02 -name ca.key -type f -delete"
+      - "find /tmp/etcd03 -name ca.key -type f -delete"

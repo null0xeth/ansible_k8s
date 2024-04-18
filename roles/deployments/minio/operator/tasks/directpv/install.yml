@@ -1,0 +1,31 @@
+---
+- name: Install DirectPV Krew plugin
+  ansible.builtin.shell: "{{ krew_binary }} install directpv"
+  register: plugin_install
+
+- ansible.builtin.debug:
+    msg: "{{ plugin_install }}"
+
+- name: Install DirectPV into kubernetes
+  ansible.builtin.shell: "kubectl-directpv install --quiet"
+  args:
+    chdir: "{{ krew_bin_dir }}"
+  register: kubernetes_install
+
+- name: Discover free drives
+  ansible.builtin.shell: "kubectl-directpv discover --quiet"
+  args:
+    chdir: "{{ krew_bin_dir }}"
+  register: kubernetes_drives
+
+- name: Init free drives
+  ansible.builtin.shell: "kubectl-directpv init drives.yaml --quiet"
+  args:
+    chdir: "{{ krew_bin_dir }}"
+  register: kubernetes_drives_init
+# - name: Discovered free drives
+#   ansible.builtin.shell: "{{ krew_bin_dir }}kubectl-directpv discover"
+#   register: found_drives
+
+# - ansible.builtin.debug:
+#     msg: "{{ found_drives }}"

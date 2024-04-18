@@ -1,0 +1,7 @@
+---
+- name: Create the kubelet service dir
+  become: true
+  ansible.builtin.file:
+    path: "{{ directory_mapping['system']['systemd']['kubelet'] }}"
+    state: directory
+    mode: '0755'

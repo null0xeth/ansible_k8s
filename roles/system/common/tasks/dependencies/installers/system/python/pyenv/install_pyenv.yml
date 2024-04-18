@@ -1,0 +1,19 @@
+---
+- name: Check if pyenv is already installed
+  ansible.builtin.include_tasks: pre_checks.yml
+
+- name: Install pyenv
+  when: not pyenv_installed.stat.exists
+  ansible.builtin.include_tasks: installer.yml
+
+- name: Install pyenv virtualenv
+  when: not pyenv_virtualenv_installed.stat.exists
+  ansible.builtin.include_tasks: virtualenv.yml
+
+- name: Install the pyenv update plugin
+  when: not pyenv_update_plugin_installed.stat.exists
+  ansible.builtin.include_tasks: updateplugin.yml
+
+- name: "Install python version {{ version_map['python'] }}"
+  when: not has_pyenv_version.stat.exists
+  ansible.builtin.include_tasks: config.yml

@@ -1,0 +1,9 @@
+---
+kubernetes_commands:
+  kubeadm:
+    init:
+      etcd:
+        node: "kubeadm init phase etcd local --config /tmp/{{ groups['etcd'][0] }}/kubeadmcfg.yaml"
+        ca: kubeadm init phase certs etcd-ca
+    generate:
+      join_etcd: "kubeadm init phase etcd local --config {{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"

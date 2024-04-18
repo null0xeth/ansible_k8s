@@ -1,0 +1,5 @@
+---
+- name: Prepull kubernetes images
+  become: true
+  ansible.builtin.shell: "{{ kubernetes_commands['kubeadm']['pull_images'] }}"
+

@@ -1,0 +1,8 @@
+---
+- name: Check the currently active shell
+  ansible.builtin.include_tasks: user/checks.yml
+
+- name: Change user shell to zsh
+  when: wrong_user_shell
+  ansible.builtin.include_tasks: user/set_default_shell.yml
+

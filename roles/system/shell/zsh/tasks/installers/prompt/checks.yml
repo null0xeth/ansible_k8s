@@ -1,0 +1,12 @@
+---
+- name: Check if starship is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ binary_mapping['shell']['starship'] }}"
+  register: has_starship
+
+- name: Check if the starship installation script is present
+  become: true
+  ansible.builtin.stat:
+    path: "{{ file_mappings['tmp']['starship'] }}"
+  register: has_starship_script

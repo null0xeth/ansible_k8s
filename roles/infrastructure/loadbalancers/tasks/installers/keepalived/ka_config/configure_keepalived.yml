@@ -1,0 +1,11 @@
+---
+- name: Create the Keepalived config file
+  become: true
+  ansible.builtin.template:
+    src: "{{ lb_templates['keepalived'] }}"
+    dest: "{{ lb_sub_file_mappings['system']['keepalived']['config'] }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart keepalived
+

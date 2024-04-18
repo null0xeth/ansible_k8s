@@ -1,0 +1,14 @@
+---
+- name: Check if a kubelet conf file exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ etcd_sub_file_mappings['system']['systemd']['kubelet']['config'] }}"
+  register: has_kubelet_conf_file
+
+- name: Check if a kubelet unit file exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ etcd_sub_file_mappings['system']['systemd']['kubelet']['etcd_manager'] }}"
+  register: has_kubelet_unit_file
+
+

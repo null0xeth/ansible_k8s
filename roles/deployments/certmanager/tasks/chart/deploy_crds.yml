@@ -1,0 +1,10 @@
+---
+- name: Apply the certmanager CRDs
+  become: true
+  kubernetes.core.k8s:
+    kubeconfig: "{{ sub_file_mappings['home']['kube']['config'] }}"
+    state: "{{ deployment_state }}"
+    src: "{{ deployment_files['certmanager']['crds'] }}"
+    apply: true
+    wait: true
+

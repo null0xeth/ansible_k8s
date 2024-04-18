@@ -1,0 +1,5 @@
+---
+- name: Read definition template file from the Ansible controller file system
+  kubernetes.core.k8s:
+    state: "{{ deployment_state }}"
+    template: templates/cf_token.j2

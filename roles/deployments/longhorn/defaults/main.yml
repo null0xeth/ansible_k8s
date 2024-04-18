@@ -1,0 +1,3 @@
+---
+# defaults file for longhorn
+deployment_state: present

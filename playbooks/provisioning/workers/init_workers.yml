@@ -1,0 +1,6 @@
+---
+- name: Init the kubernetes workers
+  hosts: workers
+  tasks:
+    - ansible.builtin.include_role:
+        name: infrastructure/kubernetes_workers

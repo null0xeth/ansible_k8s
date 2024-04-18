@@ -1,0 +1,6 @@
+{%- for middleware in traefik_middleware -%}
+  {% set _item = 'middleware/' + middleware + '.j2' %}
+  {%- if traefik_middleware[middleware].enabled -%}
+    {%- include _item -%}
+  {%- endif -%}
+{%- endfor -%}

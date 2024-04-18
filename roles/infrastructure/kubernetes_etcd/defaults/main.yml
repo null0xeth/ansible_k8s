@@ -1,0 +1,6 @@
+---
+role_name: kubernetes_etcd
+role_template_dir: "{{ role_path }}/templates"
+
+templates:
+  kubeadmcfg_etcd: "{{ role_template_dir }}/kubeadm.j2"

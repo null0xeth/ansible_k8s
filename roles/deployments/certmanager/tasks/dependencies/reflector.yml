@@ -1,0 +1,34 @@
+---
+- name: Get reflector chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['reflector']['name'] }}"
+    release_namespace: "{{ helm_charts['reflector']['namespace'] }}"
+  register: reflector_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    reflector_deployed: "{{ true if reflector_status.status is defined and reflector_status.status.status == 'deployed' else false }}"
+
+- name: Deploy the reflector chart
+  when: not reflector_deployed
+  block:
+    - name: Add the reflector chart repo
+      kubernetes.core.helm_repository:
+        name: "{{ helm_repo_map['reflector']['name'] }}"
+        repo_url: "{{ helm_repo_map['reflector']['url'] }}"
+        repo_state: present
+      register: reflector_repo_add
+
+    - name: Deploy latest version of reflector
+      kubernetes.core.helm:
+        name: "{{ helm_charts['reflector']['release_name'] }}"
+        chart_ref: "{{ helm_charts['reflector']['release'] }}"
+        release_namespace: default
+        release_state: "{{ deployment_state }}"
+        update_repo_cache: true
+        wait: true
+      register: rf_deploy
+
+    - name: Print deployment status
+      ansible.builtin.debug:
+        msg: "{{ rf_deploy.stdout }}"

@@ -1,0 +1,10 @@
+---
+- name: Create the oh-my-zsh directory
+  ansible.builtin.file:
+    path: "{{ shell['omz']['base']['install_dir'] }}"
+    state: directory
+    mode: '0755'
+    recurse: true
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+

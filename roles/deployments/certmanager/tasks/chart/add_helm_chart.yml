@@ -1,0 +1,7 @@
+---
+- name: Add the certmanager chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['reflector']['name'] }}"
+    repo_url: "{{ helm_repo_map['reflector']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: reflector_repo_add

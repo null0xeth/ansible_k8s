@@ -1,0 +1,7 @@
+---
+- name: Init the TCP loadbalancers
+  hosts: loadbalancers
+  tasks:
+    - ansible.builtin.include_role:
+        name: infrastructure/loadbalancers
+

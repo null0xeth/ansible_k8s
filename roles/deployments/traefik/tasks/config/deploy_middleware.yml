@@ -1,0 +1,15 @@
+---
+- name: Generate the middlewares.yaml file
+  ansible.builtin.template:
+    src: templates/middleware.j2
+    dest: "{{ global_home_dir }}/middlewares.yaml"
+
+- name: Read definition template file from the Ansible controller file system
+  kubernetes.core.k8s:
+    state: "{{ deployment_state }}"
+    src: "{{ global_home_dir }}/middlewares.yaml"
+
+# - ansible.builtin.template:
+#     src: templates/middleware.j2
+#     dest: "{{ global_home_dir }}/diemfdiemfdiemf.j2"
+

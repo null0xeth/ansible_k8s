@@ -1,0 +1,6 @@
+---
+- name: Init controlplanes
+  hosts: controlplanes
+  tasks:
+    - ansible.builtin.include_role:
+        name: infrastructure/kubernetes_controlplane

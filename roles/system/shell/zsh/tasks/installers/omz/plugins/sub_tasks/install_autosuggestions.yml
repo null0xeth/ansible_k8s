@@ -1,0 +1,7 @@
+---
+- name: Install zsh-autosuggestions plugin
+  ansible.builtin.git:
+    repo: "{{ shell['omz']['autosuggestions']['download'] }}"
+    dest: "{{ shell['omz']['autosuggestions']['install_dir'] }}"
+    depth: 1
+

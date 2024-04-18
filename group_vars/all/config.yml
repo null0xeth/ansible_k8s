@@ -1,0 +1,29 @@
+---
+# GROUP: KUBERNETES
+# All variables inside this file can be changed to
+# Match your specific needs and requirements
+# Changes made to these variables will be automatically
+# processed in `config_derived.yml`
+
+## GLOBAL VARIABLES - CONFIGURATION BOOLEANS:
+create_user_group: true
+
+## GLOBAL VARIABLES - ANSIBLE USER:
+global_primary_user: "null0x"
+global_primary_group: sudo
+global_primary_ssh_key: "ansible_ed25519"
+
+## GLOBAL VARIABLES - DIRECTORIES:
+global_home_dir: "/home/{{ global_primary_user }}"
+global_sys_dir: /etc
+global_usr_dir: /usr
+global_opt_dir: /opt
+global_tmp_dir: /tmp
+global_var_dir: /var
+
+global_role_base: "{{ global_home_dir }}/development/ansible/k8s/roles"
+regex_filter: '\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]'
+regex_filter_to: ''
+
+provision_base_workers: 3
+provision_extra_workers: 2

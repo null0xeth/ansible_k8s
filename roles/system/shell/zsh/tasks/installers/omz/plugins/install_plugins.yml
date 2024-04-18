@@ -1,0 +1,19 @@
+---
+- name: Check which zsh plugins have already been installed
+  ansible.builtin.include_tasks: checks.yml
+
+- name: Install zsh-autosuggestions plugin
+  when: not autosuggestions_installed.stat.exists
+  ansible.builtin.include_tasks: sub_tasks/install_autosuggestions.yml
+
+- name: Install zsh-completions plugin
+  when: not completions_installed.stat.exists
+  ansible.builtin.include_tasks: sub_tasks/install_zsh_completions.yml
+
+- name: Install zsh-syntax-highlighting plugin
+  when: not syntaxhl_installed.stat.exists
+  ansible.builtin.include_tasks: sub_tasks/install_syntax_hl.yml
+
+- name: Install autoupdate-zsh-plugin plugin
+  when: not autoupdate_installed.stat.exists
+  ansible.builtin.include_tasks: sub_tasks/install_autoupdate.yml

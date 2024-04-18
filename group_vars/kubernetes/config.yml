@@ -1,0 +1,24 @@
+---
+# GROUP: KUBERNETES
+# All variables inside this file can be changed to
+# Match your specific needs and requirements
+# Changes made to these variables will be automatically
+# processed in `config_derived.yml`
+global_controlplane_hosts: "{{ lookup('inventory_hostnames', 'controlplanes', wantlist=True) }}"
+## CLUSTER - NETWORKING - CNI:
+global_config_cni: flannel
+#global_config_cni_pod_cidr:
+
+## CLUSTER - COMPONENTS - RUNTIME:
+global_config_runtime: containerd
+global_config_cgroup: systemd
+
+## CLUSTER - NETWORKING - LOADBALANCER - VIP:
+global_config_vip_ipv4: 192.168.105.10
+global_config_vip_interface: eth0
+global_config_vip_dns: vip2.chonk.city
+global_config_vip_port: 6443
+
+## CLUSTER - NETWORKING - LOADBALANCER - SETTINGS:
+global_config_lb_mode: ipvs
+global_config_lb_strict_arp: true

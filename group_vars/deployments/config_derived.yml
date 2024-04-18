@@ -1,0 +1,93 @@
+---
+support_version_map:
+  helm: "{{ helm_version | default('v3.14.3') }}"
+  longhorn_checks: "{{ longhorn_version | default('v1.6.1') }}"
+
+deployment_version_map:
+  metallb: "{{ metallb_version | default('v0.14.4') }}"
+  longhorn: "{{ longhorn_version | default('v1.6.1') }}"
+  certmanager: "{{ certmanager_version | default('v1.14.4') }}"
+
+helm_repo_map:
+  longhorn:
+    name: longhorn
+    url: https://charts.longhorn.io
+    chart: longhorn
+  certmanager:
+    name: jetstack
+    url: https://charts.jetstack.io
+    chart: cert-manager
+  reflector:
+    name: emberstack
+    url: https://emberstack.github.io/helm-charts
+    chart: reflector
+  traefik:
+    name: traefik
+    url: https://traefik.github.io/charts
+    chart: traefik
+
+support_source_map:
+  helm: "https://get.helm.sh/helm-{{ support_version_map['helm'] }}-linux-amd64.tar.gz"
+  longhorn_iscsi: "https://raw.githubusercontent.com/longhorn/longhorn/{{ support_version_map['longhorn_checks'] }}/deploy/prerequisite/longhorn-iscsi-installation.yaml"
+  longhorn_nfs: "https://raw.githubusercontent.com/longhorn/longhorn/{{ support_version_map['longhorn_checks'] }}/deploy/prerequisite/longhorn-nfs-installation.yaml"
+  check_longhorn_deps: "https://raw.githubusercontent.com/longhorn/longhorn/{{ support_version_map['longhorn_checks'] }}/scripts/environment_check.sh"
+
+manifest_source_map:
+  flannel: "https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml"
+  metallb: "https://raw.githubusercontent.com/metallb/metallb/{{ deployment_version_map['metallb'] }}/config/manifests/metallb-native.yaml"
+
+support_deployments:
+  helm:
+    download: "{{ support_source_map['helm'] }}"
+    install_dir: "{{ directory_mapping['usr']['local']['bin'] }}"
+    binary_path: "{{ directory_mapping['usr']['local']['bin'] }}/helm"
+
+deployments:
+  metallb:
+    manifest: "{{ manifest_source_map['metallb'] }}"
+    dir: "{{ deployment_file_dir }}/metallb"
+    pool:
+      name: "{{ metallb_pool_name | default('pool01') }}"
+      ip_range: "{{ metallb_pool_ip_range }}"
+      adv_name: "{{ metallb_pool_adv_name | default('pushpool01') }}"
+
+helm_charts:
+  longhorn:
+    namespace: longhorn-system
+    release: "{{ helm_repo_map['longhorn']['name'] + '/' + helm_repo_map['longhorn']['chart'] }}"
+    release_name: "{{ helm_repo_map['longhorn']['chart'] }}"
+    create_ns: false
+    version: "{{ deployment_version_map['longhorn'] }}"
+  certmanager:
+    namespace: cert-manager
+    release: "{{ helm_repo_map['certmanager']['name'] + '/' + helm_repo_map['certmanager']['chart'] }}"
+    release_name: "{{ helm_repo_map['certmanager']['chart'] }}"
+    create_ns: true
+    version: "{{ deployment_version_map['certmanager'] }}"
+  reflector:
+    release: "{{ helm_repo_map['reflector']['name'] + '/' + helm_repo_map['reflector']['chart'] }}"
+    release_name: "{{ helm_repo_map['certmanager']['chart'] }}"
+    namespace: default
+  traefik:
+    namespace: traefik
+    release: "{{ helm_repo_map['traefik']['name'] + '/' + helm_repo_map['traefik']['chart'] }}"
+    release_name: "{{ helm_repo_map['traefik']['chart'] }}"
+    create_ns: true
+
+
+cluster_cni:
+  flannel:
+    manifest_url: "{{ manifest_source_map['flannel'] }}"
+    pod_network: "{{ global_config_cni_pod_cidr | default('10.244.0.0/16') }}"
+
+deployment_files:
+  certmanager:
+    crds: "https://github.com/cert-manager/cert-manager/releases/download/{{ helm_charts['certmanager']['version'] }}/cert-manager.crds.yaml"
+  metallb:
+    pool: "{{ deployments['metallb']['dir'] + deployments['metallb']['pool']['name'] }}"
+    adv: "{{ deployments['metallb']['dir'] + deployments['metallb']['pool']['adv_name'] }}"
+
+certmanager:
+  cf_token: "{{ vault_certmanager_cf_token }}"
+  cf_email: "{{ vault_certmanager_cf_email }}"
+  cf_dnsZones: "{{ vault_certmanager_cf_dnsZones }}"

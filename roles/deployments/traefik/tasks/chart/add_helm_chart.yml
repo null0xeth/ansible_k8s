@@ -1,0 +1,7 @@
+---
+- name: Add the traefik chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['traefik']['name'] }}"
+    repo_url: "{{ helm_repo_map['traefik']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: traefik_repo_add

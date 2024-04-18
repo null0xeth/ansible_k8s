@@ -1,0 +1,34 @@
+---
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: "{{ helm_charts['certmanager']['namespace'] }}"
+    api_version: v1
+    kind: Namespace
+    state: "{{ deployment_state }}"
+
+- name: Render the values.yaml file
+  become: true
+  ansible.builtin.template:
+    src: templates/values.j2
+    dest: /home/null0x/deployments/certmanager.yml
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+    mode: '0755'
+
+- name: Deploy latest version of certmanager
+  kubernetes.core.helm:
+    name: "{{ helm_charts['certmanager']['release_name'] }}"
+    chart_ref: "{{ helm_charts['certmanager']['release'] }}"
+    chart_version: "{{ helm_charts['certmanager']['version'] }}"
+    create_namespace: "{{ helm_charts['certmanager']['create_ns'] | bool }}"
+    release_namespace: "{{ helm_charts['certmanager']['namespace'] }}"
+    release_state: "{{ deployment_state }}"
+    values_files:
+      - "/home/{{ global_primary_user }}/deployments/certmanager.yml"
+    update_repo_cache: true
+    wait: true
+  register: cm_deploy
+
+- name: Print deployment status
+  ansible.builtin.debug:
+    msg: "{{ cm_deploy.stdout }}"

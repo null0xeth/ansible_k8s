@@ -1,0 +1,8 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: {{ deployments['metallb']['pool']['name'] }}
+  namespace: metallb-system
+spec:
+  addresses:
+  - {{ deployments['metallb']['pool']['ip_range'] }}

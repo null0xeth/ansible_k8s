@@ -1,0 +1,40 @@
+---
+# GROUP: CLUSTER_INTERNAL
+# All variables in this file are populated automatically
+# Please edit `config.yml` and not this file
+etcd_group_hosts: "{{ lookup('inventory_hostnames', 'etcd', wantlist=True) }}"
+
+kube_source_map:
+  containerd: "https://github.com/containerd/containerd/releases/download/{{ pinned_binaries['containerd'] }}/containerd-{{ pinned_binaries['containerd'] | regex_replace('^v', '') }}-linux-amd64.tar.gz"
+  containerd_service: "https://raw.githubusercontent.com/containerd/containerd/main/containerd.service"
+  runc: "https://github.com/opencontainers/runc/releases/download/{{ pinned_binaries['runc'] }}/runc.amd64"
+  cni: "https://github.com/containernetworking/plugins/releases/download/{{ pinned_binaries['cni'] }}/cni-plugins-linux-amd64-{{ pinned_binaries['cni'] }}.tgz"
+
+runtime:
+  containerd:
+    download: "{{ kube_source_map['containerd'] }}"
+    endpoint: "unix:///var/run/containerd/containerd.sock"
+    cgroup: "{{ config['runtime']['cgroup'] }}"
+    install_dir: "{{ directory_mapping['usr']['local']['bin'] }}"
+    binary_path: "{{ directory_mapping['usr']['local']['bin'] }}/containerd"
+    ansible_task: "runtime/containerd/containerd.yml"
+  containerd_runc:
+    download: "{{ kube_source_map['runc'] }}"
+    install_dir: "{{ directory_mapping['usr']['local']['sbin'] }}"
+    binary_path: "{{ directory_mapping['usr']['local']['sbin'] }}/runc"
+  cni:
+    download: "{{ kube_source_map['cni'] }}"
+    install_dir: "{{ sub_mapping['opt']['cni'] }}/bin"
+    binary_path: "{{ sub_mapping['opt']['cni'] }}/bin/dummy"
+
+_system:
+  containerd:
+    install_dir: "{{ sub_mapping['system']['containerd'] }}"
+    config_path: "{{ sub_mapping['system']['containerd'] }}/config.toml"
+
+systemd:
+  containerd_service:
+    download: "{{ kube_source_map['containerd_service'] }}"
+    install_dir: "{{ sub_directory_mapping['usr']['local']['lib']['systemd'] }}"
+    service_path: "{{ sub_directory_mapping['usr']['local']['lib']['systemd'] }}/containerd.service"
+

@@ -1,0 +1,7 @@
+{%- for route in traefik_routes -%}
+  {% set _item = 'routes/' + route + '.j2' %}
+  {%- if traefik_routes[route].enabled -%}
+    {%- include _item -%}
+  {%- endif -%}
+{%- endfor -%}
+

@@ -1,0 +1,27 @@
+---
+- name: Set current host
+  ansible.builtin.set_fact:
+    current_host: "{{ inventory_hostname }}"
+
+- name: "Copy /pki from etcd01 to secondary etcd members"
+  become: true
+  ansible.posix.synchronize:
+    src: "/tmp/{{ current_host }}/pki"
+    dest: "{{ sub_mapping['system']['kubernetes'] }}/"
+    use_ssh_args: true
+    mode: push
+    recursive: true
+    rsync_path: "sudo rsync"
+  delegate_to: "{{ groups['etcd'][0] }}"
+
+- name: "Copy kubeadm config files from etcd01 to secondary etcd"
+  become: true
+  ansible.posix.synchronize:
+    src: "/tmp/{{ current_host }}/kubeadmcfg.yaml"
+    dest: "{{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
+    use_ssh_args: true
+    mode: push
+    recursive: true
+    rsync_path: "sudo rsync"
+  delegate_to: "{{ groups['etcd'][0] }}"
+

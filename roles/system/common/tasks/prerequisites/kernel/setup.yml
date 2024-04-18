@@ -1,0 +1,11 @@
+---
+- name: Check the system for already installed kernel modules
+  ansible.builtin.include_tasks: checks.yml
+
+- name: Add the required kernel modules to modules-load.d for autoloading
+  when: not has_k8sconf.stat.exists
+  ansible.builtin.include_tasks: modules/autoload.yml
+
+- name: Configure the loaded kernel modules
+  when: not has_k8s_sysctl.stat.exists
+  ansible.builtin.include_tasks: modules/sysctl.yml

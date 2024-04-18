@@ -1,0 +1,40 @@
+---
+traefik_middleware:
+  default_headers:
+    _name: "default-headers"
+    enabled: true
+  rate_limit:
+    _name: "rate-limit"
+    enabled: true
+  https_redirectscheme:
+    _name: "https-redirectscheme"
+    enabled: true
+  compress:
+    _name: "compress"
+    enabled: true
+
+traefik_middleware_config:
+  compress: {}
+  https_redirectscheme:
+    scheme: https
+    permanent: true
+  rate_limit:
+    average: 100
+    burst: 50
+  default_headers:
+    methods: [GET, OPTIONS, PUT]
+    max_age: 100
+    proxy_headers: [X-Forwarded-Host]
+    sts_seconds: 63072000
+    sts_inc_subdomain: true
+    sts_preload: true
+    force_sts_header: true
+    custom_frame_opts: allow-from https:chonk.city
+    content_type_no_sniff: true
+    browser_xss_filter: true
+    ref_policy: same-origin
+    perm_policy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
+    cust_resp_headers:
+      x_robots_tag: none,noarchive,nosnippet,notranslate,noimageindex,
+      server: "''"
+      x_forw_proto: https

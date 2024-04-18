@@ -1,0 +1,27 @@
+---
+- name: Check if Haproxy is already installed
+  ansible.builtin.include_tasks: prerequisites/checks.yml
+
+- name: Initialize Haproxy
+  #when: not has_haproxy.stat.exists
+  block:
+    # - name: Create the haproxy user
+    #   ansible.builtin.include_tasks: prerequisites/users/create_haproxy.yml
+
+    # - name: Create the required directories
+    #   ansible.builtin.include_tasks: prerequisites/directories/haproxy.yml
+
+    - name: Install haproxy
+      become: true
+      ansible.builtin.apt:
+        name: haproxy
+        state: present
+        update_cache: true
+        force_apt_get: true
+      notify: enable haproxy
+
+    - name: Create the required directories
+      ansible.builtin.include_tasks: prerequisites/directories/haproxy.yml
+
+    - name: Create the haproxy config file
+      ansible.builtin.include_tasks: hpconfig/configure.yml

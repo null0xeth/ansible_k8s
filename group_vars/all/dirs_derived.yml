@@ -1,0 +1,80 @@
+---
+sub_mapping:
+  home:
+    kube: "{{ global_home_dir + '/.kube' }}"
+    ssh: "{{ global_home_dir }}/.ssh"
+    pyenv: "{{ global_home_dir }}/.pyenv"
+    omz: "{{ global_home_dir }}/.oh-my-zsh"
+  system:
+    sudoers_d: "{{ global_sys_dir }}/sudoers.d"
+    kubernetes: "{{ global_sys_dir }}/kubernetes"
+    systemd: "{{ global_sys_dir }}/systemd/system"
+    containerd: "{{ global_sys_dir }}/containerd"
+    modules_load_d: "{{ global_sys_dir }}/modules-load.d"
+    sysctl_d: "{{ global_sys_dir }}/sysctl.d"
+  opt:
+    cni: "{{ global_opt_dir }}/cni"
+  var:
+    lib: "{{ global_var_dir }}/lib"
+  usr:
+    local: "{{ global_usr_dir }}/local"
+    lib: "{{ global_usr_dir }}/lib"
+    bin: "{{ global_usr_dir }}/bin"
+    sbin: "{{ global_usr_dir }}/sbin"
+
+
+directory_mapping:
+  home:
+    omz:
+      custom: "{{ sub_mapping['home']['omz'] }}/custom"
+  system:
+    kubernetes:
+      pki: "{{ sub_mapping['system']['kubernetes'] }}/pki"
+    systemd:
+      kubelet: "{{ sub_mapping['system']['systemd'] }}/kubelet.service.d"
+  usr:
+    bin:
+      bash: "{{ sub_mapping['usr']['bin'] }}/bash"
+      zsh: "{{ sub_mapping['usr']['bin'] }}/zsh"
+    local:
+      bin: "{{ sub_mapping['usr']['local'] }}/bin"
+      lib: "{{ sub_mapping['usr']['local'] }}/lib"
+      sbin: "{{ sub_mapping['usr']['local'] }}/sbin"
+
+sub_directory_mapping:
+  home:
+    omz:
+      custom:
+        plugins: "{{ directory_mapping['home']['omz']['custom'] }}/plugins"
+
+  system:
+    python:
+      pyenv:
+        plugins: "{{ sub_mapping['home']['pyenv'] }}/plugins"
+        installed_python_versions: "{{ sub_mapping['home']['pyenv'] }}/versions"
+  usr:
+    local:
+      lib:
+        systemd: "{{ directory_mapping['usr']['local']['lib'] }}/systemd/system"
+
+mapped_directories:
+  home:
+    omz:
+      plugins:
+        autosuggestions: "{{ sub_directory_mapping['home']['omz']['custom']['plugins'] }}/zsh-autosuggestions"
+        completions: "{{ sub_directory_mapping['home']['omz']['custom']['plugins'] }}/zsh-completions"
+        syntaxhl: "{{ sub_directory_mapping['home']['omz']['custom']['plugins'] }}/zsh-syntax-highlighting"
+        autoupdate: "{{ sub_directory_mapping['home']['omz']['custom']['plugins'] }}/plugins/autoupdate"
+
+  system:
+    kubernetes:
+      manifests: "{{ sub_mapping['system']['kubernetes'] }}/manifests"
+      pki:
+        etcd: "{{ directory_mapping['system']['kubernetes']['pki'] }}/etcd"
+    golang: "{{ sub_mapping['usr']['local'] }}/go"
+    python:
+      install_dir: "{{ sub_mapping['usr']['lib'] }}/python{{ base_version_map['python'] }}"
+      pyenv:
+        virtual_env: "{{ sub_directory_mapping['system']['python']['pyenv']['plugins'] }}/pyenv-virtualenv"
+        update_plugin: "{{ sub_directory_mapping['system']['python']['pyenv']['plugins'] }}/pyenv-update"
+

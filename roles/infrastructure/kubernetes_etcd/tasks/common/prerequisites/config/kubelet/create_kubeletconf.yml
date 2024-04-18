@@ -1,0 +1,21 @@
+---
+- name: Create the kubelet config file
+  become: true
+  ansible.builtin.template:
+    src: templates/kubeletconf.j2
+    dest: "{{ etcd_sub_file_mappings['system']['systemd']['kubelet']['config'] }}"
+    mode: '0755'
+  when: not has_kubelet_conf_file.stat.exists
+
+- name: Create the kubelet service manager config
+  become: true
+  ansible.builtin.template:
+    src: templates/kubelet-etcd-service.j2
+    dest: "{{ etcd_sub_file_mappings['system']['systemd']['kubelet']['etcd_manager'] }}"
+    mode: '0755'
+  notify: restart kubelet
+
+- name: Refresh and run the handlers
+  become: true
+  ansible.builtin.meta: flush_handlers
+

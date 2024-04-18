@@ -1,0 +1,20 @@
+---
+- name: Create the haproxy lib directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ lb_directory_mapping['var']['lib']['haproxy'] }}"
+    recurse: true
+    state: directory
+    mode: '0755'
+    owner: haproxy
+    group: haproxy
+
+- name: Create the haproxy etc directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ lb_sub_mapping['system']['haproxy'] }}"
+    recurse: true
+    state: directory
+    mode: '0755'
+    owner: haproxy
+    group: haproxy

@@ -1,0 +1,8 @@
+---
+- name: Check if etcd is initialized
+  become: true
+  ansible.builtin.stat:
+    path: "{{ etcd_sub_file_mappings['system']['kubernetes']['etcd']['config'] }}"
+  register: etcd_initialized
+
+

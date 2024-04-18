@@ -1,0 +1,6 @@
+---
+- name: Init the etcd members
+  hosts: etcd
+  tasks:
+    - ansible.builtin.include_role:
+        name: infrastructure/kubernetes_etcd

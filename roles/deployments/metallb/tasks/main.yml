@@ -1,0 +1,53 @@
+---
+- name: Apply the Metallb manifest
+  become: true
+  kubernetes.core.k8s:
+    kubeconfig: "{{ sub_file_mappings['home']['kube']['config'] }}"
+    state: "{{ deployment_state }}"
+    src: "{{ deployments['metallb']['manifest'] }}"
+    apply: true
+    wait: true
+
+- name: Wipe the deployment directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ deployments['metallb']['dir'] }}"
+    state: absent
+
+- name: Create the deployment directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ deployments['metallb']['dir'] }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+    recurse: true
+
+- name: Create the pool deployment file
+  ansible.builtin.template:
+    src: templates/ip_pool.j2
+    dest: "{{ deployment_files['metallb']['pool'] }}"
+    mode: '0644'
+
+- name: Create the pool advertisement deployment file
+  ansible.builtin.template:
+    src: templates/pool_adv.j2
+    dest: "{{ deployment_files['metallb']['adv'] }}"
+    mode: '0644'
+
+- name: Apply Metallb pool
+  kubernetes.core.k8s:
+    kubeconfig: "{{ sub_file_mappings['home']['kube']['config'] }}"
+    state: "{{ deployment_state }}"
+    src: "{{ deployment_files['metallb']['pool'] }}"
+    apply: true
+    wait: true
+
+- name: Apply Metallb pool adv
+  kubernetes.core.k8s:
+    kubeconfig: "{{ sub_file_mappings['home']['kube']['config'] }}"
+    state: "{{ deployment_state }}"
+    src: "{{ deployment_files['metallb']['adv'] }}"
+    apply: true
+    wait: true

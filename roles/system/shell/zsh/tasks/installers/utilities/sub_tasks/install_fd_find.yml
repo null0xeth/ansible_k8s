@@ -1,0 +1,9 @@
+# ---
+# - name: link fd-find to fd
+#   become: true
+#   ansible.builtin.file:
+#     src: "{{ binary_mapping['sysutils']['fd_find'] }}"
+#     dest: "{{ binary_mapping['sysutils']['fd'] }}"
+#     state: link
+#     force: true
+

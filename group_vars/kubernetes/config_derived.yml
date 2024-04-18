@@ -1,0 +1,19 @@
+---
+# GROUP: KUBERNETES
+# All variables in this file are populated automatically
+# Please edit `config.yml` and not this file
+config:
+  cni: "{{ global_config_cni | default('flannel') }}"
+  runtime:
+    interface: "{{ global_config_runtime | default('containerd') }}"
+    cgroup: "{{ global_config_cgroup | default('systemd') }}"
+  loadbalancer:
+    lb_mode: "{{ global_config_lb_mode | default('ipvs') }}"
+    lb_strict_arp: "{{ global_config_lb_strict_arp | default(true) | bool }}"
+  vip:
+    dns: "{{ global_config_vip_dns | default('localhost') }}"
+    ipv4: "{{ global_config_vip_ipv4 | default(hostvars[groups['controlplanes'][0]]['ansible_default_ipv4']['address']) }}"
+    cidr: "{{ global_config_vip_ipv4 | default(hostvars[groups['controlplanes'][0]]['ansible_default_ipv4']['address']) }}/24"
+    interface: "{{ global_config_vip_interface | default('eth0') }}"
+    port: "{{ global_config_vip_port | default(6443) }}"
+

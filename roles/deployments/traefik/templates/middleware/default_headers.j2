@@ -1,0 +1,32 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: default-headers
+  namespace: traefik
+  annotations:
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-traefik
+    helm.sh/chart: traefik-23.1.0
+    app.kubernetes.io/managed-by: Helm
+spec:
+  headers:
+    accessControlAllowMethods: {{ traefik_middleware_config['default_headers']['methods'] }}
+    accessControlMaxAge: {{ traefik_middleware_config['default_headers']['max_age'] }}
+    hostsProxyHeaders: {{ traefik_middleware_config['default_headers']['proxy_headers'] }}
+    stsSeconds: {{ traefik_middleware_config['default_headers']['sts_seconds'] }}
+    stsIncludeSubdomains: {{ traefik_middleware_config['default_headers']['sts_inc_subdomain'] | bool}}
+    stsPreload: {{ traefik_middleware_config['default_headers']['sts_preload'] | bool }}
+    forceSTSHeader: {{ traefik_middleware_config['default_headers']['force_sts_header'] | bool }}
+    customFrameOptionsValue: {{ traefik_middleware_config['default_headers']['custom_frame_opts'] }}
+    contentTypeNosniff: {{ traefik_middleware_config['default_headers']['content_type_no_sniff'] | bool }}
+    browserXssFilter: {{ traefik_middleware_config['default_headers']['browser_xss_filter'] | bool }}
+    referrerPolicy: {{ traefik_middleware_config['default_headers']['ref_policy'] }}
+    permissionsPolicy: {{ traefik_middleware_config['default_headers']['perm_policy'] }}
+    customResponseHeaders:
+      X-Robots-Tag: {{ traefik_middleware_config['default_headers']['cust_resp_headers']['x_robots_tag'] }}
+      server: {{ traefik_middleware_config['default_headers']['cust_resp_headers']['server'] }}
+      X-Forwarded-Proto: {{ traefik_middleware_config['default_headers']['cust_resp_headers']['x_forw_proto'] }}
+
+

@@ -1,0 +1,9 @@
+---
+- name: Check the currently active shell
+  register: current_shell
+  ansible.builtin.shell: "which $SHELL"
+
+- name: Shell is not zsh
+  when: not current_shell.stdout_lines[0] in sysconfig['user_shell']
+  ansible.builtin.set_fact:
+    wrong_user_shell: true

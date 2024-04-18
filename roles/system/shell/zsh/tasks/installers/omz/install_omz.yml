@@ -1,0 +1,16 @@
+---
+- name: Check if oh-my-zsh is already installed
+  ansible.builtin.include_tasks: prerequisites/checks.yml
+
+- name: Install oh-my-zsh
+  when: not omz_installed.stat.exists
+  block:
+    - name: Create the oh-my-zsh directory
+      ansible.builtin.include_tasks: prerequisites/create_directories.yml
+
+    - name: Install the base version of oh-my-zsh
+      ansible.builtin.include_tasks: base_install.yml
+
+    - name: Install the desired oh-my-zsh plugins
+      ansible.builtin.include_tasks: plugins/install_plugins.yml
+

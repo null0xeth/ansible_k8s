@@ -1,0 +1,11 @@
+---
+## SYSCONFIG - SHELL:
+sysconfig_user_shell: zsh
+
+## VERSION PINNING - DEPENDENCIES:
+global_python_version: "3.11.7"
+global_go_version: "1.22.0"
+
+## VERSION PINNING - SYSUTILS:
+sysutil_eza_version: "v0.18.9"
+sysutil_procs_version: "v0.14.5"

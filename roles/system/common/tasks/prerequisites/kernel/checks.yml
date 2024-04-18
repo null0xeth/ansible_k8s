@@ -1,0 +1,13 @@
+---
+- name: Check if k8s.conf exists in /etc/modules-load.d
+  become: true
+  ansible.builtin.stat:
+    path: "{{ sub_file_mappings['system']['modules_load_d']['k8s_conf'] }}"
+  register: has_k8sconf
+
+- name: Check if the network bridge kernel module is already configured
+  become: true
+  ansible.builtin.stat:
+    path: "{{ sub_file_mappings['system']['sysctl_d']['k8s_conf'] }}"
+  register: has_k8s_sysctl
+

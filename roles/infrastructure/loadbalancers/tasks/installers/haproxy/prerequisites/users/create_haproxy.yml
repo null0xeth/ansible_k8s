@@ -1,0 +1,14 @@
+---
+- name: "Ensure group haproxy exists"
+  become: true
+  ansible.builtin.group:
+    name: haproxy
+    state: absent
+
+- name: Create the primary haproxy account
+  become: true
+  ansible.builtin.user:
+    name: haproxy
+    state: absent
+    groups: haproxy
+    append: true

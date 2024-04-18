@@ -1,0 +1,13 @@
+---
+- name: Create the haproxy config files
+  become: true
+  vars:
+    _global_controlplane_hosts: "{{ global_controlplane_hosts }}"
+  ansible.builtin.template:
+    src: "{{ lb_templates['haproxy'] }}"
+    dest: "{{ lb_sub_file_mappings['system']['haproxy']['config'] }}"
+    owner: haproxy
+    group: haproxy
+    mode: '0644'
+  notify: restart haproxy
+

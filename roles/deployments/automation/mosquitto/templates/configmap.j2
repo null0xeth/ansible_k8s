@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+  namespace: frontend
+  labels:
+    app: mosquitto
+data:
+  mosquitto.conf: |
+    listener 1883
+    allow_anonymous false
+    password_file /mosquitto/config/passwords
+    persistence false
+    log_dest stdout
+  passwords: |
+    {{ mosquitto_password }}

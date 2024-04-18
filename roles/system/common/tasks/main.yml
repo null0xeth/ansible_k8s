@@ -1,0 +1,9 @@
+---
+- name: Install all required packages
+  ansible.builtin.include_tasks: packages/install_packages.yml
+
+- name: Ensure all prerequisites have been satisfied
+  ansible.builtin.include_tasks: prerequisites/satisfy_prerequisites.yml
+
+- name: Ensure all dependencies are installed
+  ansible.builtin.include_tasks: dependencies/dependencies.yml

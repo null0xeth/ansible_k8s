@@ -1,0 +1,3 @@
+---
+- name: Run all required installers
+  ansible.builtin.include_tasks: installers/run_installers.yml

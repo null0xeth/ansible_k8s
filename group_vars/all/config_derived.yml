@@ -1,0 +1,9 @@
+---
+# GROUP: ALL
+# All variables in this file are populated automatically
+# Please edit `config.yml` and not this file
+
+primary_ssh_path: "{{ global_home_dir }}/.ssh/{{ global_primary_ssh_key }}"
+primary_ssh_pub_path: "{{ primary_ssh_path }}.pub"
+
+global_user_groups: "{{ 'sudo,' + global_primary_user if create_user_group else 'sudo' }}"

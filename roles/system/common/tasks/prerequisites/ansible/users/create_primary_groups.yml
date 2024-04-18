@@ -1,0 +1,7 @@
+---
+- name: "Ensure group {{ global_primary_user }} exists"
+  become: true
+  ansible.builtin.group:
+    name: "{{ global_primary_user }}"
+    state: present
+

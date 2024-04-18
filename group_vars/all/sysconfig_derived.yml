@@ -1,0 +1,86 @@
+---
+sysconfig:
+  user_shell: "{{ sysconfig_user_shell | default('zsh') }}"
+
+wrong_user_shell: false
+
+version_map:
+  python: "{{ global_python_version | default('3.11.7') }}"
+  go: "{{ global_go_version | default('1.22.0') }}"
+  eza: "{{ sysutil_eza_version | default('v0.18.9') }}"
+  procs: "{{ sysutil_procs_version | default('v0.14.5') }}"
+
+base_version_map:
+  python: "{{ version_map['python'].split('.')[:2] | join('.') }}"
+  go: "{{ version_map['go'].split('.')[:2] | join('.') }}"
+
+source_map:
+  pyenv: "https://github.com/pyenv/pyenv.git"
+  go: "https://dl.google.com/go/go{{ version_map['go'] }}.linux-amd64.tar.gz"
+  omz: "https://github.com/ohmyzsh/ohmyzsh.git"
+
+system:
+  go:
+    download: "{{ source_map['go'] }}"
+    binary_path: "{{ sub_mapping['usr']['local'] }}/go/bin/go"
+    install_dir: "{{ sub_mapping['usr']['local'] }}"
+  pyenv:
+    download: "{{ source_map['pyenv'] }}"
+    install_dir: "{{ sub_mapping['home']['pyenv'] }}"
+    version: "HEAD"
+    binary_path: "{{ sub_mapping['home']['pyenv'] }}/bin/pyenv"
+    python_binary: "{{ sub_mapping['home']['pyenv'] }}/versions/{{ version_map['python'] }}/bin/{{ base_version_map['python'] }}"
+  pyenv_plugins:
+    venv:
+      download: "https://github.com/yyuu/pyenv-virtualenv.git"
+      install_dir: "{{ mapped_directories['system']['python']['pyenv']['virtual_env'] }}"
+      version: "HEAD"
+      plugin_path: "{{ mapped_directories['system']['python']['pyenv']['virtual_env'] }}/bin/pyenv-virtualenv"
+    update:
+      download: "https://github.com/pyenv/pyenv-update.git"
+      install_dir: "{{ mapped_directories['system']['python']['pyenv']['update_plugin'] }}"
+      version: "HEAD"
+      plugin_path: "{{ mapped_directories['system']['python']['pyenv']['update_plugin'] }}/bin/pyenv-update"
+
+shell:
+  omz:
+    base:
+      download: "{{ source_map['omz'] }}"
+      install_dir: "{{ sub_mapping['home']['omz'] }}"
+      binary_path: "{{ sub_mapping['home']['omz'] }}/oh-my-zsh.sh"
+    autosuggestions:
+      download: "https://github.com/zsh-users/zsh-autosuggestions"
+      install_dir: "{{ sub_directory_mapping['home']['omz']['custom']['plugins'] }}/zsh-autosuggestions"
+      plugin_path: "{{ mapped_directories['home']['omz']['plugins']['autosuggestions'] }}/zsh-autosuggestions.plugin.zsh"
+    completions:
+      download: "https://github.com/zsh-users/zsh-completions"
+      install_dir: "{{ sub_directory_mapping['home']['omz']['custom']['plugins'] }}/zsh-completions"
+      plugin_path: "{{ mapped_directories['home']['omz']['plugins']['completions'] }}/zsh-completions.plugin.zsh"
+    syntaxhl:
+      download: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+      install_dir: "{{ sub_directory_mapping['home']['omz']['custom']['plugins'] }}/zsh-syntax-highlighting"
+      plugin_path: "{{ mapped_directories['home']['omz']['plugins']['syntaxhl'] }}/zsh-syntax-highlighting.plugin.zsh"
+    autoupdate:
+      download: "https://github.com/TamCore/autoupdate-oh-my-zsh-plugins.git"
+      install_dir: "{{ sub_directory_mapping['home']['omz']['custom']['plugins'] }}/plugins/autoupdate"
+      plugin_path: "{{ mapped_directories['home']['omz']['plugins']['autoupdate'] }}/autoupdate.plugin.zsh"
+  prompt:
+    starship:
+      download: "https://starship.rs/install.sh"
+      install_command: "sh {{ file_mappings['tmp']['starship'] }} --yes"
+      installer_path: "{{ file_mappings['tmp']['starship'] }}"
+      binary_path: "{{ binary_mapping['shell']['starship'] }}"
+
+sysutils:
+  procs:
+    releases: "https://api.github.com/repos/dalance/procs/releases/latest"
+    installed_version: "{{ version_map['procs'] }}"
+    download: "https://github.com/dalance/procs/releases/download/{{ version_map['procs'] }}/procs-{{ version_map['procs'] }}-x86_64-linux.zip"
+    install_dir: "{{ directory_mapping['usr']['local']['bin'] }}"
+    binary_path: "{{ directory_mapping['usr']['local']['bin'] }}/procs"
+  eza:
+    releases: "https://api.github.com/repos/eza-community/eza/releases/latest"
+    installed_version: "{{ version_map['eza'] }}"
+    download: "https://github.com/eza-community/eza/releases/download/{{ version_map['eza'] }}/eza_x86_64-unknown-linux-gnu.zip"
+    install_dir: "{{ directory_mapping['usr']['local']['bin'] }}"
+    binary_path: "{{ directory_mapping['usr']['local']['bin'] }}/eza"

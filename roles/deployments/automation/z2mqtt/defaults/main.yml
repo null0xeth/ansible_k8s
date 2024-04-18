@@ -1,0 +1,3 @@
+---
+# defaults file for z2mqtt
+deployment_state: present

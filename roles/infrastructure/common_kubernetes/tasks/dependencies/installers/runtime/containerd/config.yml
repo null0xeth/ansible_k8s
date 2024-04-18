@@ -1,0 +1,36 @@
+---
+# - name: Create containerd directory
+#   become: true
+#   ansible.builtin.file:
+#     path: "{{ mapped_directories['system']['kubernetes']['runtime']['containerd']['config'] }}"
+#     state: directory
+#     mode: '0755'
+
+- name: Create containerd directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ _system['containerd']['install_dir'] }}"
+    state: directory
+    mode: '0755'
+
+# - name: Add containerd config
+#   become: true
+#   ansible.builtin.template:
+#     src: templates/containerd.j2
+#     dest: "{{ sub_file_mappings['system']['kubernetes']['runtime']['containerd']['config'] }}"
+#     mode: '0644'
+#   notify:
+#     - restart containerd
+
+- name: Add containerd config
+  become: true
+  ansible.builtin.template:
+    src: templates/containerd.j2
+    dest: "{{ _system['containerd']['config_path'] }}"
+    mode: '0644'
+  notify:
+    - restart containerd
+
+- name: Ensure all notified handlers are executed
+  become: true
+  ansible.builtin.meta: flush_handlers

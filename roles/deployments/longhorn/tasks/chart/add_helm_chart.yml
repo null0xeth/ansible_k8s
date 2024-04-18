@@ -1,0 +1,7 @@
+---
+- name: Add the longhorn chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['longhorn']['name'] }}"
+    repo_url: "{{ helm_repo_map['longhorn']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: longhorn_repo_add

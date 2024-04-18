@@ -1,0 +1,6 @@
+---
+- name: Fix python externally managed errors
+  become: true
+  ansible.builtin.file:
+    path: "{{ sub_file_mappings['system']['python']['externally_managed'] }}"
+    state: absent

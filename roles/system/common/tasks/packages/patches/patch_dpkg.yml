@@ -1,0 +1,5 @@
+---
+- name: Fix dpkg
+  become: true
+  ansible.builtin.command: dpkg --configure -a
+

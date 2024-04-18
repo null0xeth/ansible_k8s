@@ -1,0 +1,23 @@
+---
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: "{{ helm_charts['longhorn']['namespace'] }}"
+    api_version: v1
+    kind: Namespace
+    state: "{{ deployment_state }}"
+
+- name: Deploy latest version of longhorn
+  kubernetes.core.helm:
+    name: "{{ helm_charts['longhorn']['release_name'] }}"
+    chart_ref: "{{ helm_charts['longhorn']['release'] }}"
+    chart_version: "{{ helm_charts['longhorn']['version'] }}"
+    create_namespace: "{{ helm_charts['longhorn']['create_ns'] | bool }}"
+    release_namespace: "{{ helm_charts['longhorn']['namespace'] }}"
+    release_state: "{{ deployment_state }}"
+    update_repo_cache: true
+    wait: true
+  register: lh_deploy
+
+- name: Print deployment status
+  ansible.builtin.debug:
+    msg: "{{ lh_deploy.stdout }}"

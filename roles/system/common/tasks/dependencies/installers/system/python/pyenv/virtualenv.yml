@@ -1,0 +1,8 @@
+---
+- name: Install PyEnv virtualenv
+  ansible.builtin.git:
+    repo: "{{ system['pyenv_plugins']['venv']['download'] }}"
+    dest: "{{ system['pyenv_plugins']['venv']['install_dir'] }}"
+    version: "{{ system['pyenv_plugins']['venv']['version'] }}"
+    update: true
+

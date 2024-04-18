@@ -1,0 +1,17 @@
+---
+- name: Check if kubernetes is already initialized
+  ansible.builtin.include_tasks: common/prerequisites/checks/pre_checks.yml
+
+- name: Provision the worker nodes
+  when: not kubernetes_initialized.stat.exists
+  block:
+    - name: Create the required directories
+      ansible.builtin.include_tasks: common/prerequisites/directories/create_directories.yml
+
+    - name: Generate the worker join command
+      ansible.builtin.include_tasks: to_delegate/worker_join_cmd.yml
+
+    - name: Initialize the worker node
+      become: true
+      ansible.builtin.shell: "{{ worker_join_command }}"
+      register: worker_join_output

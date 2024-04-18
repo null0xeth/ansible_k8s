@@ -1,0 +1,6 @@
+---
+- name: Initialize Haproxy
+  ansible.builtin.include_tasks: haproxy/install_haproxy.yml
+
+- name: Initialize Keepalived
+  ansible.builtin.include_tasks: keepalived/install_keepalived.yml

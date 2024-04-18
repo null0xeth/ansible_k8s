@@ -1,0 +1,12 @@
+---
+# GROUP: CLUSTER_INTERNAL
+# All variables inside this file can be changed to
+# Match your specific needs and requirements
+# Changes made to these variables will be automatically
+# processed in `config_derived.yml`
+
+## Binary version pinning:
+pinned_binaries:
+  containerd: "v1.7.15"
+  runc: "v1.1.12"
+  cni: "v1.4.1"

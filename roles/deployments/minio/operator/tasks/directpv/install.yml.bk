@@ -1,0 +1,32 @@
+---
+- name: Install DirectPV Krew plugin
+  ansible.builtin.shell: "{{ krew_binary }} install directpv"
+  register: plugin_install
+
+- ansible.builtin.debug:
+    msg: "{{ plugin_install }}"
+
+- name: Move ze directpv zo ze germany
+  become: true
+  ansible.builtin.copy:
+    src: "{{ krew_bin_dir }}/kubectl-directpv"
+    dest: "/usr/local/bin"
+    mode: '0755'
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+
+- name: Install DirectPV into kubernetes
+  ansible.builtin.shell:
+    cmd: "kubectl directpv install"
+    stdin: "kubectl directpv install"
+  register: kubernetes_install
+
+- ansible.builtin.debug:
+    msg: "{{ kubernetes_install }}"
+
+# - name: Discovered free drives
+#   ansible.builtin.shell: "{{ krew_bin_dir }}kubectl-directpv discover"
+#   register: found_drives
+
+# - ansible.builtin.debug:
+#     msg: "{{ found_drives }}"

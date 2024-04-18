@@ -1,0 +1,14 @@
+---
+traefik_routes:
+  attic:
+    enabled: false
+  frigate:
+    enabled: false
+  longhorn:
+    enabled: true
+  minio:
+    enabled: false
+  traefik_dashboard:
+    enabled: true
+  z2mqtt:
+    enabled: true
