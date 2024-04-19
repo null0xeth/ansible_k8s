@@ -25,6 +25,14 @@ helm_repo_map:
     name: traefik
     url: https://traefik.github.io/charts
     chart: traefik
+  pgsql:
+    name: bitnami
+    url: https://charts.bitnami.com/bitnami
+    chart: postgresql
+  zitadel:
+    name: zitadel
+    url: https://charts.zitadel.com
+    chart: zitadel
 
 support_source_map:
   helm: "https://get.helm.sh/helm-{{ support_version_map['helm'] }}-linux-amd64.tar.gz"
@@ -73,7 +81,16 @@ helm_charts:
     release: "{{ helm_repo_map['traefik']['name'] + '/' + helm_repo_map['traefik']['chart'] }}"
     release_name: "{{ helm_repo_map['traefik']['chart'] }}"
     create_ns: true
-
+  pgsql:
+    namespace: guardian
+    release: oci://registry-1.docker.io/bitnamicharts/postgresql
+    release_name: db-postgresql
+    create_ns: true
+  zitadel:
+    namespace: guardian
+    release: "{{ helm_repo_map['zitadel']['name'] + '/' + helm_repo_map['zitadel']['chart'] }}"
+    release_name: "{{ helm_repo_map['zitadel']['chart'] }}"
+    create_ns: true
 
 cluster_cni:
   flannel:

@@ -1,0 +1,7 @@
+---
+- name: Add the zitadel chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['zitadel']['name'] }}"
+    repo_url: "{{ helm_repo_map['zitadel']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: zitadel_repo_add

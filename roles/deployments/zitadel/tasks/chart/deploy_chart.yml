@@ -1,0 +1,26 @@
+---
+- name: Render the values.yaml file
+  become: true
+  ansible.builtin.template:
+    src: templates/zitadel.j2
+    dest: /home/null0x/deployments/zitadel.yml
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+    mode: '0755'
+
+- name: Deploy latest version of zitadel
+  kubernetes.core.helm:
+    name: "{{ helm_charts['zitadel']['release_name'] }}"
+    chart_ref: "{{ helm_charts['zitadel']['release'] }}"
+    create_namespace: "{{ helm_charts['zitadel']['create_ns'] | bool }}"
+    release_namespace: "{{ helm_charts['zitadel']['namespace'] }}"
+    release_state: "{{ deployment_state }}"
+    values_files:
+      - "/home/{{ global_primary_user }}/deployments/zitadel.yml"
+    update_repo_cache: true
+    wait: true
+  register: zd_deploy
+
+- name: Print deployment status
+  ansible.builtin.debug:
+    msg: "{{ zd_deploy.stdout }}"

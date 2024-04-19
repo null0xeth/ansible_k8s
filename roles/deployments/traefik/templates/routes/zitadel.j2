@@ -1,0 +1,32 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: zitadel-transport
+  namespace: guardian
+spec:
+  serverName: chonk.city
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: zitadel
+  namespace: guardian
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints: [web, websecure]
+  routes:
+    - match: Host(`guardian.chonk.city`)
+      kind: Rule
+      services:
+        - name: zitadel
+          port: 8080
+          # scheme: https
+          passHostHeader: true
+          serversTransport: zitadel-transport
+          # strategy: RoundRobin
+          # weight: 10
+  tls:  #
+    secretName: chonk-city-tls  #

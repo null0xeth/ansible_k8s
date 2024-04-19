@@ -1,0 +1,7 @@
+---
+- name: Deploy zitadel
+  hosts: controlplane01
+  tasks:
+    - ansible.builtin.include_role:
+        name: deployments/zitadel
+

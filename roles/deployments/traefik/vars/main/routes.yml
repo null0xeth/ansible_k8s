@@ -12,3 +12,5 @@ traefik_routes:
     enabled: true
   z2mqtt:
     enabled: true
+  zitadel:
+    enabled: true

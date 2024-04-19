@@ -1,0 +1,63 @@
+---
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: "{{ helm_charts['pgsql']['namespace'] }}"
+    api_version: v1
+    kind: Namespace
+    state: "{{ deployment_state }}"
+
+- name: Get PostgreSQL chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_charts['pgsql']['release_name'] }}"
+    release_namespace: "{{ helm_charts['pgsql']['namespace'] }}"
+  register: pgsql_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    pgsql_deployed: "{{ true if pgsql_status.status is defined and pgsql_status.status.status == 'deployed' else false }}"
+
+- name: Generate the zitadel_certs.yaml file
+  ansible.builtin.template:
+    src: templates/zitadel_certs.j2
+    dest: "{{ global_home_dir }}/zitadel_certs.yaml"
+
+- name: Read definition template file from the Ansible controller file system
+  kubernetes.core.k8s:
+    state: "{{ deployment_state }}"
+    src: "{{ global_home_dir }}/zitadel_certs.yaml"
+
+- name: Deploy the pgsql chart
+  when: not pgsql_deployed
+  block:
+    # - name: Add the postgresql chart repo
+    #   kubernetes.core.helm_repository:
+    #     name: "{{ helm_repo_map['pgsql']['name'] }}"
+    #     repo_url: "{{ helm_repo_map['pgsql']['url'] }}"
+    #     repo_state: "{{ deployment_state }}"
+    #   register: bitnami_repo_add
+
+    - name: Render the values.yaml file
+      become: true
+      ansible.builtin.template:
+        src: templates/pgsql.j2
+        dest: /home/null0x/deployments/pgsql.yml
+        owner: "{{ global_primary_user }}"
+        group: "{{ global_primary_user }}"
+        mode: '0755'
+
+    - name: Deploy latest version of pgsql
+      kubernetes.core.helm:
+        name: "{{ helm_charts['pgsql']['release_name'] }}"
+        chart_ref: "{{ helm_charts['pgsql']['release'] }}"
+        release_namespace: "{{ helm_charts['pgsql']['namespace'] }}"
+        release_state: "{{ deployment_state }}"
+        update_repo_cache: true
+        values_files:
+          - "/home/{{ global_primary_user }}/deployments/pgsql.yml"
+        wait: true
+      register: pg_deploy
+
+    - name: Print deployment status
+      ansible.builtin.debug:
+        msg: "{{ pg_deploy.stdout }}"
+

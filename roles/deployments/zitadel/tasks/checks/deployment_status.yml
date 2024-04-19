@@ -1,0 +1,11 @@
+---
+- name: Get zitadel chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['zitadel']['chart'] }}"
+    release_namespace: "{{ helm_charts['zitadel']['namespace'] }}"
+  register: zitadel_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    zitadel_deployed: "{{ true if zitadel_status.status is defined and zitadel_status.status.status == 'deployed' else false }}"
+

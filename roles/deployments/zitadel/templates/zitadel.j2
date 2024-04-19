@@ -1,0 +1,38 @@
+---
+zitadel:
+  masterkey: x123456789012345678901234567891y
+  configmapConfig:
+    ExternalSecure: true
+    ExternalPort: 443
+    ExternalDomain: chonk.city
+    TLS:
+      Enabled: false
+    FirstInstance:
+      Org:
+        Human:
+          # use the loginname null0x@zitadel.chonk.city
+          Username: 'null0x'
+          Password: '{{ vault_pgsql_pass }}'
+    Database:
+      Postgres:
+        Host: db-postgresql
+        Port: 5432
+        Database: zitadel
+        MaxOpenConns: 20
+        MaxIdleConns: 10
+        MaxConnLifetime: 30m
+        MaxConnIdleTime: 5m
+        User:
+          Username: zitadel
+          Password: "{{ vault_pgsql_pass }}"
+          SSL:
+            Mode: verify-full
+        Admin:
+          Username: postgres
+          Password: "{{ vault_pgsql_pass }}"
+          SSL:
+            Mode: verify-full
+  dbSslCaCrtSecret: postgres-cert
+  dbSslAdminCrtSecret: postgres-cert
+  dbSslUserCrtSecret: zitadel-cert
+
