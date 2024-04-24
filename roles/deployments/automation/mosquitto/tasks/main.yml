@@ -1,22 +1,21 @@
 ---
 # tasks file for mosquitto
-
-- name: Read definition template file from the Ansible controller file system
+- name: Generate the configmap template file.
   kubernetes.core.k8s:
     state: "{{ deployment_state }}"
     template: templates/configmap.j2
 
-- name: Read definition template file from the Ansible controller file system
+- name: Generate the persistent volume claim template
   kubernetes.core.k8s:
     state: "{{ deployment_state }}"
     template: templates/pvc.j2
 
-- name: Read definition template file from the Ansible controller file system
+- name: Create the kubernetes deployment manifest
   kubernetes.core.k8s:
     state: "{{ deployment_state }}"
     template: templates/deployment.j2
 
-- name: Read definition template file from the Ansible controller file system
+- name: Create the kubernetes service
   kubernetes.core.k8s:
     state: "{{ deployment_state }}"
     template: templates/service.j2

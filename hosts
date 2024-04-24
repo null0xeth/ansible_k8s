@@ -2,12 +2,10 @@
 loadbalancers:
   hosts:
     loadbalancer01:
-      kubernetes_role: "loadbalancer"
       ansible_host: 192.168.105.126
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     loadbalancer02:
-      kubernetes_role: "loadbalancer"
       ansible_host: 192.168.105.169
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
@@ -15,55 +13,45 @@ etcd:
   hosts:
     etcd01:
       kubernetes_role: "primary_etcd"
-      ansible_host: 192.168.105.173
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     etcd02:
-      kubernetes_role: "etcd"
       ansible_host: 192.168.105.127
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     etcd03:
-      kubernetes_role: "etcd"
       ansible_host: 192.168.105.102
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
 controlplanes:
   hosts:
     controlplane01:
-      kubernetes_role: "primary_control_plane"
       ansible_host: 192.168.105.135
       ansible_user: null0x
       #ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     controlplane02:
-      kubernetes_role: "control_plane"
       ansible_host: 192.168.105.171
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     controlplane03:
-      kubernetes_role: "control_plane"
       ansible_host: 192.168.105.85
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
 workers:
   hosts:
     worker01:
-      kubernetes_role: "worker"
       ansible_host: 192.168.105.69
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     worker02:
-      kubernetes_role: "worker"
       ansible_host: 192.168.105.209
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     worker03:
-      kubernetes_role: "worker"
       ansible_host: 192.168.105.128
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     worker05:
-      kubernetes_role: "worker"
       ansible_host: 192.168.105.131
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
@@ -71,7 +59,9 @@ kubernetes:
   children:
     deployments:
       children:
-        controlplanes:
+        helm:
+          children:
+            controlplanes:
     cluster_internal:
       children:
         etcd:
