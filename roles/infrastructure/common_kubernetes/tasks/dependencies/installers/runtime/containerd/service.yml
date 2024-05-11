@@ -3,8 +3,11 @@
   become: true
   ansible.builtin.file:
     path: "{{ systemd['containerd_service']['install_dir'] }}"
+    recurse: true
     state: "{{ directory_state }}"
     mode: '0755'
+    owner: root
+    group: root
 
 - name: Install the containerd service
   become: true

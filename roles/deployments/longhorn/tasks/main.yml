@@ -1,17 +1,17 @@
 ---
-# - name: Run the preliminary system checks
-#   ansible.builtin.include_tasks: checks/run_checks.yml
+- name: Run the preliminary system checks
+  ansible.builtin.include_tasks: checks/run_checks.yml
 
-# - name: Resolve missing dependencies
-#   # when: (not longhorn_deployed and not longhorn_deps_ready) or post_fix_deps
-#   block:
-#     - name: Install missing dependencies
-#       ansible.builtin.include_tasks: dependencies/install_dependencies.yml
+- name: Resolve missing dependencies
+  #when: (not longhorn_deployed and not longhorn_deps_ready) or post_fix_deps
+  block:
+    - name: Install missing dependencies
+      ansible.builtin.include_tasks: dependencies/install_dependencies.yml
 
 - name: Deploy the latest version of Longhorn
-  # when:
-  #   - not longhorn_deployed
-  #   - longhorn_deps_ready
+  #when:
+    #- not longhorn_deployed
+    #- longhorn_deps_ready
   block:
     - name: Add the longhorn chart repo
       ansible.builtin.include_tasks: chart/add_helm_chart.yml

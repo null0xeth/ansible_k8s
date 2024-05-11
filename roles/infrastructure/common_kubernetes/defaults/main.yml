@@ -1,4 +1,4 @@
 ---
 # durr
-deployment_state: absent
-directory_state: absent
+deployment_state: present
+directory_state: directory

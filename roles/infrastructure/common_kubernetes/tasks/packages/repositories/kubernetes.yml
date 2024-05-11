@@ -12,11 +12,16 @@
       block:
         - name: Get kubernetes key and convert to .asc
           become: true
-          ansible.builtin.get_url:
+          ansible.builtin.apt_key:
+            state: present
             url: "{{ common_kubernetes_repository['key_url'] }}"
-            dest: "{{ common_kubernetes_repository['keyring_path'] }}"
-            mode: '0644'
-            force: true
+            keyring: "{{ common_kubernetes_repository['keyring_path'] }}"
+          # become: true
+          # ansible.builtin.get_url:
+          #   url: "{{ common_kubernetes_repository['key_url'] }}"
+          #   dest: "{{ common_kubernetes_repository['keyring_path'] }}"
+          #   mode: '0644'
+          #   force: true
 
         - name: Add the kubernetes repository to sources
           become: true

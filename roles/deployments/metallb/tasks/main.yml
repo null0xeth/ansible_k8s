@@ -25,12 +25,14 @@
     recurse: true
 
 - name: Create the pool deployment file
+  become: true
   ansible.builtin.template:
     src: templates/ip_pool.j2
     dest: "{{ deployment_files['metallb']['pool'] }}"
     mode: '0644'
 
 - name: Create the pool advertisement deployment file
+  become: true
   ansible.builtin.template:
     src: templates/pool_adv.j2
     dest: "{{ deployment_files['metallb']['adv'] }}"

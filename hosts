@@ -2,57 +2,54 @@
 loadbalancers:
   hosts:
     loadbalancer01:
-      ansible_host: 192.168.105.126
+      ansible_host: 192.168.105.222
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     loadbalancer02:
-      ansible_host: 192.168.105.169
+      ansible_host: 192.168.105.68
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
 etcd:
   hosts:
     etcd01:
       kubernetes_role: "primary_etcd"
+      ansible_host: 192.168.105.198
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     etcd02:
-      ansible_host: 192.168.105.127
+      ansible_host: 192.168.105.44
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     etcd03:
-      ansible_host: 192.168.105.102
+      ansible_host: 192.168.105.14
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
 controlplanes:
   hosts:
     controlplane01:
-      ansible_host: 192.168.105.135
+      ansible_host: 192.168.105.114
       ansible_user: null0x
       #ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     controlplane02:
-      ansible_host: 192.168.105.171
+      ansible_host: 192.168.105.15
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     controlplane03:
-      ansible_host: 192.168.105.85
+      ansible_host: 192.168.105.134
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
 workers:
   hosts:
     worker01:
-      ansible_host: 192.168.105.69
+      ansible_host: 192.168.105.104
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     worker02:
-      ansible_host: 192.168.105.209
+      ansible_host: 192.168.105.125
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
     worker03:
-      ansible_host: 192.168.105.128
-      ansible_user: null0x
-      ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
-    worker05:
-      ansible_host: 192.168.105.131
+      ansible_host: 192.168.105.112
       ansible_user: null0x
       ansible_ssh_private_key_file: /home/null0x/.ssh/ansible_ed25519
 kubernetes:
