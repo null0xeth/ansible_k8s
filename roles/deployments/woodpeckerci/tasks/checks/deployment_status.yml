@@ -1,0 +1,11 @@
+---
+- name: Get woodpecker chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['woodpecker']['chart'] }}"
+    release_namespace: "{{ helm_charts['woodpecker']['namespace'] }}"
+  register: wp_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    wp_deployed: "{{ true if wp_status.status is defined and wp_status.status.status == 'deployed' else false }}"
+

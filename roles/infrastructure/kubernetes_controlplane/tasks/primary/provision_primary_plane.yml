@@ -21,7 +21,6 @@
     - name: Initialize the kubernetes controlplane
       ansible.builtin.include_tasks: cluster/pre_init/kubeadm/commands/first_init.yml
 
-
     - name: Generate the controlplane join command
       ansible.builtin.include_tasks: cluster/post_init/kubeadm/generate_cp_join_cmd.yml
 
@@ -44,6 +43,7 @@
 
 
     - name: "Configure {{ config['cni'] }} as the cluster CNI"
+      when: config['cni'] == 'flannel'
       ansible.builtin.include_tasks: "cluster/post_init/cni/install_{{ config['cni'] }}.yml"
 
     # # TODO: move out

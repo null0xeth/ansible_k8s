@@ -1,0 +1,33 @@
+---
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: "{{ helm_charts['argocd']['namespace'] }}"
+    api_version: v1
+    kind: Namespace
+    state: "{{ deployment_state }}"
+
+# - name: Render the values.yaml file
+#   become: true
+#   ansible.builtin.template:
+#     src: templates/argocd.j2
+#     dest: /home/null0x/deployments/argocd.yml
+#     owner: "{{ global_primary_user }}"
+#     group: "{{ global_primary_user }}"
+#     mode: '0755'
+
+- name: Deploy latest version of Argo-cd
+  kubernetes.core.helm:
+    name: "{{ helm_charts['argocd']['release_name'] }}"
+    chart_ref: "{{ helm_charts['argocd']['release'] }}"
+    chart_version: "{{ helm_charts['argocd']['version'] }}"
+    create_namespace: "{{ helm_charts['argocd']['create_ns'] | bool }}"
+    release_namespace: "{{ helm_charts['argocd']['namespace'] }}"
+    values_files:
+      - "/home/{{ global_primary_user }}/deployments/argocd.yml"
+    release_state: "{{ deployment_state }}"
+    update_repo_cache: true
+    wait: true
+  register: argocd_deploy
+
+- ansible.builtin.debug:
+    msg: "{{ argocd_deploy }}"

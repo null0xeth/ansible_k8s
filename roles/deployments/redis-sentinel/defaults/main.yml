@@ -1,0 +1,5 @@
+---
+# defaults file for redis-sentinel
+template_dir_middleware: "{{ role_path }}/templates/middleware/"
+deployment_state: present
+

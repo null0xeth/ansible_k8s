@@ -1,0 +1,18 @@
+---
+# tasks file for otomi
+
+
+- name: Run the preliminary system checks
+  ansible.builtin.include_tasks: checks/run_checks.yml
+
+- name: Deploy the latest version of otomi
+  when: not otomi_deployed
+  block:
+    # - name: Deploy dependencies
+    #   ansible.builtin.include_tasks: dependencies/pgsql.yml
+
+    - name: Add the otomi chart repo
+      ansible.builtin.include_tasks: chart/add_helm_chart.yml
+
+    - name: Deploy the latest version of the otomi chart
+      ansible.builtin.include_tasks: chart/deploy_chart.yml

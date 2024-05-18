@@ -1,0 +1,13 @@
+---
+- name: Get Argo-cd chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_charts['argocd']['release'] }}"
+    release_namespace: "{{ helm_charts['argocd']['namespace'] }}"
+  register: argocd_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    argocd_deployed: "{{ true if argocd_status.status is defined and argocd_status.status.status == 'deployed' and deployment_state == 'present' else false }}"
+
+- ansible.builtin.debug:
+    msg: "{{ argocd_status }}"

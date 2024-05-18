@@ -1,0 +1,7 @@
+---
+- name: Add the woodpeckerci chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['woodpecker']['name'] }}"
+    repo_url: "{{ helm_repo_map['woodpecker']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: wp_repo_add

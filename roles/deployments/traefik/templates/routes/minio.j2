@@ -3,49 +3,78 @@ apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
   name: minio-transport
-  namespace: minio-attic
+  namespace: minio-s3
 spec:
   serverName: chonk.city
   insecureSkipVerify: true
 ---
 apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: minio-operator-transport
+  namespace: minio-operator
+spec:
+  serverName: operator
+  insecureSkipVerify: true
+
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: minio-attic-endpoint
-  namespace: minio-attic
+  name: minio-s3-endpoint
+  namespace: minio-s3
   annotations:
     kubernetes.io/ingress.class: traefik-external
 spec:
-  entryPoints: [web, websecure]
+  entryPoints: [web]
   routes:
-    - match: Host(`s3.chonk.city`)
+    - match: Host(`eu-west.chonk.city`)
       kind: Rule
       services:
         - name: minio
           port: 443
           scheme: https
           serversTransport: minio-transport
-          strategy: RoundRobin
-          weight: 10
-  tls:  #
-    secretName: chonk-city-tls  #
+          #strategy: RoundRobin
+          #weight: 10
+  tls:
+    secretName: chonk-city-tls
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: minio-attic-tenant
-  namespace: minio-attic
+  name: minio-tenant-console
+  namespace: minio-s3
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints: [web, websecure]
+  routes:
+    - match: Host(`tenant.chonk.city`)
+      kind: Rule
+      services:
+        - name: cluster-s3-console
+          port: 9443
+  tls:
+    secretName: chonk-city-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-operator-console
+  namespace: minio-operator
   annotations:
     kubernetes.io/ingress.class: traefik-external
 spec:
   entryPoints: [websecure]
   routes:
-    - match: Host(`tenant.chonk.city`)
+    - match: Host(`operator.chonk.city`)
       kind: Rule
       services:
-        - name: minio-attic-tenant-console
+        - name: console
           port: 9443
-          strategy: RoundRobin
-          weight: 10
-  tls:  #
-    secretName: chonk-city-tls  #
+          serversTransport: minio-operator-transport
+          scheme: https
+  tls:
+    secretName: chonk-city-tls
+

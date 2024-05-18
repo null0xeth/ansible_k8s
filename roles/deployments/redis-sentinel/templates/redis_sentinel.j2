@@ -1,0 +1,18 @@
+sentinel:
+  enabled: true
+metrics:
+  enabled: true
+  sentinel:
+    enabled: true
+master:
+  extraFlags:
+    - --maxmemory-policy allkeys-lru
+  persistence:
+    enabled: false
+replica:
+  extraFlags:
+    - --maxmemory-policy allkeys-lru
+  persistence:
+    enabled: false
+auth:
+  enabled: false

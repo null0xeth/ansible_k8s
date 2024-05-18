@@ -1,0 +1,4 @@
+---
+- name: Check if woodpecker is already deployed
+  ansible.builtin.include_tasks: deployment_status.yml
+

@@ -1,0 +1,34 @@
+nameOverride: ""
+fullnameOverride: ""
+type: postgresql
+mode: standalone
+
+recovery:
+  method: object_store
+  provider: s3
+  s3:
+    region: "eu-west"
+    bucket: "cnpg01"
+    path: "/"
+    accessKey: "{{ vault_s3_ak }}"
+    secretKey: "{{ vault_s3_sk }}"
+
+cluster:
+  instances: 3
+
+backups:
+  enabled: true
+  endpointURL: "https://s3.eu-west.chonk.city"
+  provider: s3
+  s3:
+    region: "eu-west"
+    bucket: "cnpg01"
+    path: "/"
+    accessKey: "{{ vault_s3_ak }}"
+    secretKey: "{{ vault_s3_sk }}"
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 0 * * *"
+      backupOwnerReference: self
+  retentionPolicy: "30d"
+

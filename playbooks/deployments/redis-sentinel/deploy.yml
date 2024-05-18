@@ -1,0 +1,7 @@
+---
+- name: Deploy redis-sentinel
+  hosts: controlplane01
+  tasks:
+    - ansible.builtin.include_role:
+        name: deployments/redis-sentinel
+

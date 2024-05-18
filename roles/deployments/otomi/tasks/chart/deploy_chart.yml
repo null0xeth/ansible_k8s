@@ -1,0 +1,26 @@
+---
+- name: Render the values.yaml file
+  become: true
+  ansible.builtin.template:
+    src: templates/otomi.j2
+    dest: /home/null0x/deployments/otomi.yml
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+    mode: '0755'
+
+- name: Deploy latest version of otomi
+  kubernetes.core.helm:
+    name: "{{ helm_charts['otomi']['release_name'] }}"
+    chart_ref: "{{ helm_charts['otomi']['release'] }}"
+    create_namespace: "{{ helm_charts['otomi']['create_ns'] | bool }}"
+    release_namespace: "{{ helm_charts['otomi']['namespace'] }}"
+    release_state: "{{ deployment_state }}"
+    values_files:
+      - "/home/{{ global_primary_user }}/deployments/otomi.yml"
+    update_repo_cache: true
+    wait: true
+  register: ot_deploy
+
+- name: Print deployment status
+  ansible.builtin.debug:
+    msg: "{{ ot_deploy.stdout }}"

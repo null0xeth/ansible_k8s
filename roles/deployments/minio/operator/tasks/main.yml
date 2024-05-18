@@ -1,16 +1,16 @@
 ---
 #tasks file for operator
-# - name: Install DirectPV
-#   ansible.builtin.include_tasks: directpv/install.yml
+- name: Install DirectPV
+  ansible.builtin.include_tasks: directpv/install.yml
 
-# - name: Update Krew
-#   ansible.builtin.shell: "./kubectl-krew update"
-#   args:
-#     chdir: "{{ krew_bin_dir }}"
+- name: Update Krew
+  ansible.builtin.shell: "./kubectl-krew update"
+  args:
+    chdir: "{{ krew_bin_dir }}"
 
-# - name: Install Minio Krew plugin
-#   ansible.builtin.shell: "{{ krew_binary }} install minio"
-#   register: minio_install
+- name: Install Minio Krew plugin
+  ansible.builtin.shell: "{{ krew_binary }} install minio"
+  register: minio_install
 
 # - name: Init Minio
 #   ansible.builtin.shell: "./kubectl-minio init"

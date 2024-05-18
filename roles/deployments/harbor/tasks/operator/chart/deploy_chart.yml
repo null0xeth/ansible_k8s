@@ -1,0 +1,15 @@
+---
+- name: Deploy latest version of cnpgoperator
+  kubernetes.core.helm:
+    name: "{{ helm_charts['cnpgoperator']['release_name'] }}"
+    chart_ref: "{{ helm_charts['cnpgoperator']['release'] }}"
+    create_namespace: "{{ helm_charts['cnpgoperator']['create_ns'] | bool }}"
+    release_namespace: "{{ helm_charts['cnpgoperator']['namespace'] }}"
+    release_state: "{{ deployment_state }}"
+    update_repo_cache: true
+    wait: true
+  register: co_deploy
+
+- name: Print deployment status
+  ansible.builtin.debug:
+    msg: "{{ co_deploy.stdout }}"

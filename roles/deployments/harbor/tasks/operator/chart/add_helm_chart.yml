@@ -1,0 +1,7 @@
+---
+- name: Add the cnpg chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['cnpgoperator']['name'] }}"
+    repo_url: "{{ helm_repo_map['cnpgoperator']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: cnpgoperator_repo_add

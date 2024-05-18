@@ -1,0 +1,7 @@
+---
+- name: Deploy Argo-CD
+  hosts: controlplane01
+  tasks:
+    - ansible.builtin.include_role:
+        name: deployments/argocd
+

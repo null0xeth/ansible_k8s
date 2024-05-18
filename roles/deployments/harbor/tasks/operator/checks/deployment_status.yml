@@ -1,0 +1,11 @@
+---
+- name: Get cnpgoperator chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['cnpgoperator']['chart'] }}"
+    release_namespace: "{{ helm_charts['cnpgoperator']['namespace'] }}"
+  register: co_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    operator_deployed: "{{ true if co_status.status is defined and co_status.status.status == 'deployed' else false }}"
+

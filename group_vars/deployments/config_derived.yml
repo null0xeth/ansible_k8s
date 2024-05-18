@@ -1,4 +1,5 @@
 ---
+sentinel_password: "{{ vault_sentinel_password }}"
 support_version_map:
   helm: "{{ helm_version | default('v3.14.3') }}"
   longhorn_checks: "{{ longhorn_version | default('v1.6.1') }}"
@@ -9,6 +10,10 @@ deployment_version_map:
   certmanager: "{{ certmanager_version | default('v1.14.4') }}"
 
 helm_repo_map:
+  argocd:
+    name: argo
+    url: https://argoproj.github.io/argo-helm
+    chart: argo-cd
   longhorn:
     name: longhorn
     url: https://charts.longhorn.io
@@ -33,6 +38,22 @@ helm_repo_map:
     name: zitadel
     url: https://charts.zitadel.com
     chart: zitadel
+  otomi:
+    name: otomi
+    url: https://otomi.io/otomi-core
+    chart: otomi
+  woodpecker:
+    name: woodpecker
+    url: https://woodpecker-ci.org/
+    chart: woodpecker
+  cnpgoperator:
+    name: cnpg
+    url: https://cloudnative-pg.github.io/charts
+    chart: cloudnative-pg
+  cnpgcluster:
+    name: cnpg
+    url: https://cloudnative-pg.github.io/charts
+    chart: cluster
 
 support_source_map:
   helm: "https://get.helm.sh/helm-{{ support_version_map['helm'] }}-linux-amd64.tar.gz"
@@ -60,11 +81,18 @@ deployments:
       adv_name: "{{ metallb_pool_adv_name | default('pushpool01') }}"
 
 helm_charts:
+  argocd:
+    namespace: argo
+    release: "{{ helm_repo_map['argocd']['name'] + '/' + helm_repo_map['argocd']['chart'] }}"
+    release_name: "{{ helm_repo_map['argocd']['chart'] }}"
+    create_ns: true
+    version: "6.9.3"
+
   longhorn:
     namespace: longhorn-system
     release: "{{ helm_repo_map['longhorn']['name'] + '/' + helm_repo_map['longhorn']['chart'] }}"
     release_name: "{{ helm_repo_map['longhorn']['chart'] }}"
-    create_ns: false
+    create_ns: true
     version: "{{ deployment_version_map['longhorn'] }}"
   certmanager:
     namespace: cert-manager
@@ -81,15 +109,40 @@ helm_charts:
     release: "{{ helm_repo_map['traefik']['name'] + '/' + helm_repo_map['traefik']['chart'] }}"
     release_name: "{{ helm_repo_map['traefik']['chart'] }}"
     create_ns: true
+  redis_sentinel:
+    namespace: sentinel
+    release: oci://registry-1.docker.io/bitnamicharts/redis
+    release_name: redis-sentinel
+    create_ns: true
   pgsql:
     namespace: guardian
     release: oci://registry-1.docker.io/bitnamicharts/postgresql
     release_name: db-postgresql
     create_ns: true
+  otomi:
+    namespace: otomi
+    release: "{{ helm_repo_map['otomi']['name'] + '/' + helm_repo_map['otomi']['chart'] }}"
+    release_name: "{{ helm_repo_map['otomi']['chart'] }}"
+    create_ns: true
+  woodpecker:
+    namespace: woodpecker
+    release: "{{ helm_repo_map['woodpecker']['name'] + '/' + helm_repo_map['woodpecker']['chart'] }}"
+    release_name: "{{ helm_repo_map['woodpecker']['chart'] }}"
+    create_ns: true
   zitadel:
     namespace: guardian
     release: "{{ helm_repo_map['zitadel']['name'] + '/' + helm_repo_map['zitadel']['chart'] }}"
     release_name: "{{ helm_repo_map['zitadel']['chart'] }}"
+    create_ns: true
+  cnpgoperator:
+    namespace: cnpg-system
+    release: "{{ helm_repo_map['cnpgoperator']['name'] + '/' + helm_repo_map['cnpgoperator']['chart'] }}"
+    release_name: "{{ helm_repo_map['cnpgoperator']['chart'] }}"
+    create_ns: true
+  cnpgcluster:
+    namespace: cnpg-database
+    release: "{{ helm_repo_map['cnpgcluster']['name'] + '/' + helm_repo_map['cnpgcluster']['chart'] }}"
+    release_name: "{{ helm_repo_map['cnpgcluster']['chart'] }}"
     create_ns: true
 
 cluster_cni:

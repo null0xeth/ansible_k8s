@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks: prerequisites/checks.yml
 
 - name: Initialize Keepalived
-  #when: not has_keepalived.stat.exists
+  when: not has_keepalived.stat.exists
   block:
     - name: Create the required directories
       ansible.builtin.include_tasks: prerequisites/directories/keepalived.yml

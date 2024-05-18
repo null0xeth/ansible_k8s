@@ -1,0 +1,3 @@
+---
+# defaults file for cloudnativepg
+deployment_state: present

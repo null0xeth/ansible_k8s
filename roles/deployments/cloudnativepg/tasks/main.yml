@@ -1,0 +1,18 @@
+---
+# tasks file for zitadel
+- name: Install the cnpgoperator
+  ansible.builtin.include_tasks: operator/deploy.yml
+
+- name: Install the cnpgcluster
+  ansible.builtin.include_tasks: cluster/deploy.yml
+
+- name: Generate the network policy file
+  ansible.builtin.template:
+    src: templates/networkpolicy.j2
+    dest: "{{ global_home_dir }}/policy.yaml"
+
+- name: Read definition template file from the Ansible controller file system
+  kubernetes.core.k8s:
+    #state: absent
+    state: "{{ deployment_state }}"
+    src: "{{ global_home_dir }}/policy.yaml"

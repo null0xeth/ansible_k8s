@@ -8,7 +8,7 @@ commonLabels: {}
 deployment:
   enabled: true
   kind: Deployment
-  replicas: 1
+  replicas: null
   terminationGracePeriodSeconds: 60
   minReadySeconds: 0
   annotations: {}
@@ -26,16 +26,23 @@ deployment:
 additionalArguments:
   - --serversTransport.insecureSkipVerify=true
   - --log.level=INFO
-  - --entryPoints.web.http.redirections.entryPoint.to=websecure
-  - --entryPoints.web.http.redirections.entryPoint.scheme=https
-  - --entryPoints.web.http.redirections.entrypoint.permanent=true
+  - --entryPoints.websecure.address=:9443/TCP
   - --entryPoints.frigatetcp.address=:8554/TCP
   - --entryPoints.webrtctcp.address=:8555/TCP
   - --entryPoints.webrtcudp.address=:8555/UDP
 additionalVolumeMounts: []
 affinity: {}
 autoscaling:
-  enabled: false
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
 certResolvers: {}
 env: []
 envFrom: []
@@ -80,7 +87,7 @@ metrics:
     entryPoint: metrics
 nodeSelector: {}
 persistence:
-  accessMode: ReadWriteOnce
+  accessMode: ReadWriteMany
   annotations: {}
   enabled: true
   name: data
@@ -122,7 +129,7 @@ ports:
     http3:
       enabled: false
     middlewares: []
-    port: 8443
+    port: 9443
     protocol: TCP
     tls:
       certResolver: ''
@@ -154,7 +161,13 @@ readinessProbe:
   periodSeconds: 10
   successThreshold: 1
   timeoutSeconds: 2
-resources: {}
+resources:
+  requests:
+    cpu: "100m"
+    memory: "50Mi"
+  limits:
+    cpu: "300m"
+    memory: "150Mi"
 securityContext:
   capabilities:
     add: [NET_BIND_SERVICES]

@@ -1,0 +1,7 @@
+---
+- name: Add the Argocd chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['argocd']['name'] }}"
+    repo_url: "{{ helm_repo_map['argocd']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: argocd_repo_add

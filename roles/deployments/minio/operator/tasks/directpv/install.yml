@@ -7,22 +7,23 @@
     msg: "{{ plugin_install }}"
 
 - name: Install DirectPV into kubernetes
-  ansible.builtin.shell: "kubectl-directpv install --quiet"
+  ansible.builtin.shell: "/home/null0x/.krew/store/directpv/v4.0.10/kubectl-directpv install --quiet"
   args:
     chdir: "{{ krew_bin_dir }}"
   register: kubernetes_install
 
 - name: Discover free drives
-  ansible.builtin.shell: "kubectl-directpv discover --quiet"
+  become: true
+  ansible.builtin.command: "./kubectl-directpv discover"
   args:
     chdir: "{{ krew_bin_dir }}"
-  register: kubernetes_drives
 
 - name: Init free drives
-  ansible.builtin.shell: "kubectl-directpv init drives.yaml --quiet"
+  become: true
+  ansible.builtin.shell: kubectl directpv init ./drives.yaml --dangerous
   args:
     chdir: "{{ krew_bin_dir }}"
-  register: kubernetes_drives_init
+  register: "./kubernetes_drives_init"
 # - name: Discovered free drives
 #   ansible.builtin.shell: "{{ krew_bin_dir }}kubectl-directpv discover"
 #   register: found_drives

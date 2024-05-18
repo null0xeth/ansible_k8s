@@ -6,7 +6,7 @@
 # processed in `config_derived.yml`
 global_controlplane_hosts: "{{ lookup('inventory_hostnames', 'controlplanes', wantlist=True) }}"
 ## CLUSTER - NETWORKING - CNI:
-global_config_cni: flannel
+global_config_cni: cilium
 #global_config_cni_pod_cidr:
 
 ## CLUSTER - COMPONENTS - RUNTIME:

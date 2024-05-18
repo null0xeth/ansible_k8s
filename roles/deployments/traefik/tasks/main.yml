@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks: checks/run_checks.yml
 
 - name: Deploy the latest version of traefik
-  #when: not traefik_deployed
+  when: not traefik_deployed
   block:
     - name: Add the traefik chart repo
       ansible.builtin.include_tasks: chart/add_helm_chart.yml
@@ -11,9 +11,9 @@
     - name: Deploy the latest version of the traefik chart
       ansible.builtin.include_tasks: chart/deploy_chart.yml
 
-- name: Create the cloudflare cluster issuer
+- name: Deploy or update the middleware
   ansible.builtin.include_tasks: config/deploy_middleware.yml
 
-- name: Create the cloudflare ssl certificate
+- name: Deploy or update the ingress routes
   ansible.builtin.include_tasks: config/deploy_routes.yml
 

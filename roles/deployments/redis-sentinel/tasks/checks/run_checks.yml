@@ -1,0 +1,4 @@
+---
+- name: Check if Redis Sentinel is already deployed
+  ansible.builtin.include_tasks: deployment_status.yml
+

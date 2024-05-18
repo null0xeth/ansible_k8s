@@ -13,7 +13,7 @@ etcd:
     certFile: "{{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][1] }}"
     keyFile: "{{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][2] }}"
 networking:
-  podSubnet: "{{ cluster_cni[config['cni']]['pod_network'] }}"
+  podSubnet: "{{ cluster_cni[config['cni']]['pod_network'] | default('10.10.0.0/16') }}"
 {% if config['loadbalancer']['lb_mode'] == "ipvs" %}
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1

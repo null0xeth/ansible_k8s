@@ -1,0 +1,12 @@
+---
+- name: Deploy core infrastructure
+  hosts: controlplane01
+  tasks:
+    - ansible.builtin.include_role:
+        name: deployments/metallb
+    - ansible.builtin.include_role:
+        name: deployments/longhorn
+    - ansible.builtin.include_role:
+        name: deployments/certmanager
+    - ansible.builtin.include_role:
+        name: deployments/traefik

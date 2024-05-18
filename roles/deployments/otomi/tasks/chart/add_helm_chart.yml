@@ -1,0 +1,7 @@
+---
+- name: Add the otomi chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['otomi']['name'] }}"
+    repo_url: "{{ helm_repo_map['otomi']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: otomi_repo_add

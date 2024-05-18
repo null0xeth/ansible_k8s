@@ -1,0 +1,16 @@
+cluster:
+  name: euw
+  domainSuffix: honker.cloud
+  provider: custom
+otomi:
+  hasExternalDNS: true
+  hasExternalIDP: false
+apps:
+  cert-manager:
+    issuer: byo-wildcard-cert
+    customRootCA: |
+      {{ vault_cert|indent(6) }}
+
+    customRootCAKey: |
+      {{ vault_key|indent(6) }}
+

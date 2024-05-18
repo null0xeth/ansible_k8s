@@ -1,0 +1,11 @@
+---
+- name: Get otomi chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['otomi']['chart'] }}"
+    release_namespace: "{{ helm_charts['otomi']['namespace'] }}"
+  register: otomi_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    otomi_deployed: "{{ true if otomi_status.status is defined and otomi_status.status.status == 'deployed' else false }}"
+

@@ -1,0 +1,7 @@
+# ---
+# - name: Add the Redis chart repo
+#   kubernetes.core.helm_repository:
+#     name: "{{ helm_repo_map['redis_sentinel']['name'] }}"
+#     repo_url: "{{ helm_repo_map['redis_sentinel']['url'] }}"
+#     repo_state: "{{ deployment_state }}"
+#   register: sentinel_repo_add

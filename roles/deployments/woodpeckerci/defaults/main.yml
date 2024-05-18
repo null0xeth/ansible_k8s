@@ -1,0 +1,3 @@
+---
+# defaults file for zitadel
+deployment_state: present

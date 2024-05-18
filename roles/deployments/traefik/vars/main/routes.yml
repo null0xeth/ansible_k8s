@@ -14,3 +14,9 @@ traefik_routes:
     enabled: false
   zitadel:
     enabled: false
+  hubble:
+    enabled: true
+  woodpecker:
+    enabled: true
+  harbor:
+    enabled: true

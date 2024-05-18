@@ -1,0 +1,11 @@
+---
+- name: Get cnpgcluster chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_repo_map['cnpgcluster']['chart'] }}"
+    release_namespace: "{{ helm_charts['cnpgcluster']['namespace'] }}"
+  register: cc_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    cluster_deployed: "{{ true if cc_status.status is defined and cc_status.status.status == 'deployed' else false }}"
+

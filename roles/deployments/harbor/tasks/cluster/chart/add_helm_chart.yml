@@ -1,0 +1,7 @@
+---
+- name: Add the cnpgcluster chart repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm_repo_map['cnpgcluster']['name'] }}"
+    repo_url: "{{ helm_repo_map['cnpgcluster']['url'] }}"
+    repo_state: "{{ deployment_state }}"
+  register: cnpgcluster_repo_add

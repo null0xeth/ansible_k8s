@@ -1,0 +1,24 @@
+nameOverride: "harbor"
+fullnameOverride: ""
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 3
+
+backups:
+  enabled: true
+  endpointURL: "s3.honker.cloud"
+  provider: s3
+  s3:
+    region: "eu-west"
+    bucket: "harbor"
+    path: "/"
+    accessKey: "{{ vault_s3_ak }}"
+    secretKey: "{{ vault_s3_sk }}"
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 0 * * *"
+      backupOwnerReference: self
+  retentionPolicy: "30d"
+

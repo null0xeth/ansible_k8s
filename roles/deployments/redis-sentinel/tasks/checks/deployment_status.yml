@@ -1,0 +1,13 @@
+---
+- name: Get Redis Sentinel chart deployment status
+  kubernetes.core.helm_info:
+    name: "{{ helm_charts['redis_sentinel']['release'] }}"
+    release_namespace: "{{ helm_charts['redis_sentinel']['namespace'] }}"
+  register: sentinel_status
+
+- name: Set deployment status fact
+  ansible.builtin.set_fact:
+    sentinel_deployed: "{{ true if sentinel_status.status is defined and sentinel_status.status.status == 'deployed' and deployment_state == 'present' else false }}"
+
+- ansible.builtin.debug:
+    msg: "{{ sentinel_status }}"

@@ -2,11 +2,20 @@
 - name: Install common dependencies
   hosts: worker04:worker05
   tasks:
-    - ansible.builtin.include_role:
-        name: system/common
-    - ansible.builtin.include_role:
-        name: system/shell/zsh
-    - ansible.builtin.include_role:
-        name: infrastructure/common_kubernetes
-    - ansible.builtin.include_role:
-        name: infrastructure/kubernetes_workers
+    - name: Install common dependencies on all servers
+      import_playbook: common/all.yml
+
+    - name: Install all kubernetes dependencies
+      import_playbook: common/kubernetes.yml
+
+    - name: Provision the kubernetes worker nodes
+      import_playbook: workers/init_workers.yml
+
+    # - ansible.builtin.include_role:
+    #     name: system/common
+    # - ansible.builtin.include_role:
+    #     name: system/shell/zsh
+    # - ansible.builtin.include_role:
+    #     name: infrastructure/common_kubernetes
+    # - ansible.builtin.include_role:
+    #     name: infrastructure/kubernetes_workers

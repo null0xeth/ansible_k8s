@@ -1,0 +1,45 @@
+---
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: "{{ helm_charts['redis_sentinel']['namespace'] }}"
+    api_version: v1
+    kind: Namespace
+    state: "{{ deployment_state }}"
+
+- name: Render the values.yaml file
+  become: true
+  ansible.builtin.template:
+    src: templates/redis_sentinel.j2
+    dest: /home/null0x/deployments/redis_sentinel.yml
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"
+    mode: '0755'
+
+# - name: Deploy latest version of Redis Sentinel
+#   kubernetes.core.helm:
+#     name: "{{ helm_charts['redis_sentinel']['release_name'] }}"
+#     chart_ref: "{{ helm_charts['redis_sentinel']['release'] }}"
+#     create_namespace: "{{ helm_charts['redis_sentinel']['create_ns'] | bool }}"
+#     release_namespace: "{{ helm_charts['redis_sentinel']['namespace'] }}"
+#     values_files:
+#       - "/home/{{ global_primary_user }}/deployments/redis_sentinel.yml"
+#     release_state: "{{ deployment_state }}"
+#     update_repo_cache: true
+#     wait: true
+#   register: sentinel_deploy
+
+- name: Deploy latest version of pgsql
+  kubernetes.core.helm:
+    release_name: "{{ helm_charts['redis_sentinel']['release_name'] }}"
+    chart_ref: "{{ helm_charts['redis_sentinel']['release'] }}"
+    create_namespace: "{{ helm_charts['redis_sentinel']['create_ns'] | bool }}"
+    release_namespace: "{{ helm_charts['redis_sentinel']['namespace'] }}"
+    release_state: "{{ deployment_state }}"
+    update_repo_cache: true
+    values_files:
+      - "/home/{{ global_primary_user }}/deployments/redis_sentinel.yml"
+    wait: true
+  register: sentinel_deploy
+
+- ansible.builtin.debug:
+    msg: "{{ sentinel_deploy }}"

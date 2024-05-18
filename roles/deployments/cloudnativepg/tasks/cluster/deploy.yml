@@ -1,0 +1,12 @@
+---
+- name: Run the preliminary system checks
+  ansible.builtin.include_tasks: checks/run_checks.yml
+
+- name: Deploy the latest version of Zitadel
+  when: not cluster_deployed
+  block:
+    - name: Add the cnpgcluster chart repo
+      ansible.builtin.include_tasks: chart/add_helm_chart.yml
+
+    - name: Deploy the latest version of the cnpgcluster chart
+      ansible.builtin.include_tasks: chart/deploy_chart.yml
