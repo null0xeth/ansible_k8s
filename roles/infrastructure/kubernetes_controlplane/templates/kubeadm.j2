@@ -1,3 +1,7 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+skipPhases:
+  - addon/kube-proxy
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
@@ -12,19 +16,80 @@ etcd:
     caFile: "{{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][0] }}"
     certFile: "{{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][1] }}"
     keyFile: "{{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][2] }}"
+controllerManager:
+  extraArgs:
+    allocate-node-cidrs: "true"
+    enable-leader-migration: "true"
+    feature-gates: "ClusterTrustBundle=true,ClusterTrustBundleProjection=true,HPAScaleToZero=true,KubeletCgroupDriverFromCRI=true,KubeletTracing=true,OpenAPIEnums=true,RotateKubeletServerCertificate=true,StorageVersionAPI=true,VolumeAttributesClass=true"
+scheduler:
+  extraArgs:
+    feature-gates: "ClusterTrustBundle=true,ClusterTrustBundleProjection=true,HPAScaleToZero=true,KubeletCgroupDriverFromCRI=true,KubeletTracing=true,OpenAPIEnums=true,RotateKubeletServerCertificate=true,StorageVersionAPI=true,VolumeAttributesClass=true"
+apiServer:
+  extraArgs:
+    enable-aggregator-routing: "true"
+    allow-privileged: "true"
+    authorization-mode: "Webhook,RBAC,Node"
+    enable-bootstrap-token-auth: "true"
+    feature-gates: "ClusterTrustBundle=true,ClusterTrustBundleProjection=true,HPAScaleToZero=true,KubeletCgroupDriverFromCRI=true,KubeletTracing=true,OpenAPIEnums=true,RotateKubeletServerCertificate=true,StorageVersionAPI=true,VolumeAttributesClass=true"
 networking:
   podSubnet: "{{ cluster_cni[config['cni']]['pod_network'] | default('10.10.0.0/16') }}"
-{% if config['loadbalancer']['lb_mode'] == "ipvs" %}
+clusterName: "honklabs"
 ---
-apiVersion: kubeproxy.config.k8s.io/v1alpha1
-kind: KubeProxyConfiguration
-mode: "ipvs"
-{% if config['loadbalancer']['lb_strict_arp'] %}
-ipvs:
-  strictARP: true
-{% else %}
-ipvs:
-  strictARP: false
-{% endif %}
-{% endif %}
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+rotateCertificates: "true"
+serverTLSBootstrap: "true"
+kubeReserved:
+  cpu: "1"
+  memory: "2Gi"
+  ephemeral-storage: "1Gi"
+systemReserved:
+  cpu: "500m"
+  memory: "1Gi"
+  ephemeral-storage: "1Gi"
+evictionHard:
+  memory.available: "500Mi"
+  nodefs.available: "10%"
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 0s
+    enabled: true
+  x509:
+    clientCAFile: /etc/kubernetes/pki/ca.crt
+authorization:
+  mode: Webhook
+  webhook:
+    cacheAuthorizedTTL: 0s
+    cacheUnauthorizedTTL: 0s
+cgroupDriver: systemd
+clusterDNS:
+  - 10.128.0.10
+clusterDomain: cluster.local
+containerRuntimeEndpoint: "unix:///var/run/containerd/containerd.sock"
+cpuManagerReconcilePeriod: 0s
+evictionPressureTransitionPeriod: 0s
+fileCheckFrequency: 0s
+healthzBindAddress: 127.0.0.1
+healthzPort: 10248
+httpCheckFrequency: 0s
+imageMinimumGCAge: 0s
+logging:
+  flushFrequency: 0
+  options:
+    json:
+      infoBufferSize: "0"
+  verbosity: 0
+memorySwap: {}
+nodeStatusReportFrequency: 0s
+nodeStatusUpdateFrequency: 0s
+rotateCertificates: true
+runtimeRequestTimeout: 0s
+shutdownGracePeriod: 0s
+shutdownGracePeriodCriticalPods: 0s
+staticPodPath: /etc/kubernetes/manifests
+streamingConnectionIdleTimeout: 0s
+syncFrequency: 0s
+volumeStatsAggPeriod: 0s
 

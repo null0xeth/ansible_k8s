@@ -14,8 +14,8 @@ global_config_runtime: containerd
 global_config_cgroup: systemd
 
 ## CLUSTER - NETWORKING - LOADBALANCER - VIP:
-global_config_vip_ipv4: 192.168.105.10
-global_config_vip_interface: eth0
+global_config_vip_ipv4: 192.168.139.69
+global_config_vip_interface: eth1
 global_config_vip_dns: vip2.chonk.city
 global_config_vip_port: 6443
 

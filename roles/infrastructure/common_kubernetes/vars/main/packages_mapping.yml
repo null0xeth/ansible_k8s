@@ -13,8 +13,6 @@ kubernetes_default_pkgs:
   - kubelet
   - kubeadm
   - kubectl
-  - "kubernetes-cni"
 
 common_kubernetes_package_mapping:
   all: "{{ common_kubernetes_packages + kubernetes_default_pkgs | list }}"
-

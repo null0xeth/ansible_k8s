@@ -1,8 +1,8 @@
 ---
-- name: Install the latest version of all pyenv packages
-  become: true
-  ansible.builtin.apt:
-    state: present
-    update_cache: true
-    force_apt_get: true
-    name: "{{ common_package_mapping['python']['pyenv'] }}"
+# - name: Install the latest version of all pyenv packages
+#   become: true
+#   ansible.builtin.apt:
+#     state: present
+#     update_cache: true
+#     force_apt_get: true
+#     name: "{{ common_package_mapping['python']['pyenv'] }}"

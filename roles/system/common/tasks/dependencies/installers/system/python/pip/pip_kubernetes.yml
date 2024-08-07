@@ -1,10 +1,6 @@
----
-- name: Install python modules
-  become: true
-  ansible.builtin.pip:
-    name:
-      - jsonpatch
-      - PyYAML
-      - kubernetes
-      - netaddr
-
+# ---
+# - name: Install python modules
+#   become: true
+#   ansible.builtin.pip:
+#     name:
+#       - PyYAML

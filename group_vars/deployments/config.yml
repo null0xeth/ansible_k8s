@@ -14,7 +14,7 @@ metallb_pool_adv_name: "pushpool01"
 longhorn_version: "v1.6.1"
 certmanager_version: "v1.14.4"
 longhorn_check_swag: /home/null0x/checklonghorn.sh
-helm_version: "v3.14.3"
+helm_version: "v3.15.3"
 krew_version: "v0.4.4"
 krew_binary: "{{ global_home_dir }}/.krew/bin/kubectl-krew"
 krew_bin_dir: "{{ global_home_dir }}/.krew/bin/"

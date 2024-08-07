@@ -6,6 +6,5 @@
     update_cache: true
     force_apt_get: true
     name: "{{ common_package_mapping['python']['base'] }}"
-
-- name: Install the latest version of all pyenv packages
-  ansible.builtin.include_tasks: install_pyenv_packages.yml
+# - name: Install the latest version of all pyenv packages
+#   ansible.builtin.include_tasks: install_pyenv_packages.yml

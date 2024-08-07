@@ -1,9 +1,7 @@
 ---
 - name: Apply the mandatory python patches
   ansible.builtin.include_tasks: patches/externally_managed.yml
-
-- name: Install and configure pyenv
-  ansible.builtin.include_tasks: pyenv/install_pyenv.yml
-
-- name: Install pip and the required modules
-  ansible.builtin.include_tasks: pip/install_pip_modules.yml
+# - name: Install and configure pyenv
+#   ansible.builtin.include_tasks: pyenv/install_pyenv.yml
+# - name: Install pip and the required modules
+#   ansible.builtin.include_tasks: pip/install_pip_modules.yml

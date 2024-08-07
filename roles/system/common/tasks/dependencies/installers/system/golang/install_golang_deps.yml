@@ -1,10 +1,9 @@
 ---
 - name: Check if golang is already installed
   ansible.builtin.include_tasks: pre_checks.yml
-
-- name: Install the go programming language
-  when: not go_installed.stat.exists
-  ansible.builtin.include_tasks: installer.yml
+# - name: Install the go programming language
+#   when: not go_installed.stat.exists
+#   ansible.builtin.include_tasks: installer.yml
 
 # - name: Add the go binary to PATH
 #   when: not go_binary_path.stat.exists
