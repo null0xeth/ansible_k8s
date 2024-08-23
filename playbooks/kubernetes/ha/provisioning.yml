@@ -1,0 +1,22 @@
+---
+- name: Install all required dependencies
+  hosts: ha
+  roles:
+    - kubernetes/dependencies/system
+    - kubernetes/dependencies/shell
+    - kubernetes/dependencies/kubernetes
+
+- name: Assign infrastructure roles
+  hosts: ha
+  roles:
+    - kubernetes/ha/loadbalancers
+    - kubernetes/ha/etcd
+    - kubernetes/infrastructure/controlplane
+    - kubernetes/infrastructure/workers
+    - kubernetes/infrastructure/localhost
+
+- name: Assign utility roles
+  hosts: deployments
+  roles:
+    - kubernetes/tools/helm
+    - kubernetes/tools/krew

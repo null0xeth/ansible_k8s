@@ -67,6 +67,15 @@ workers:
 
 kubernetes:
   children:
+    non_ha:
+      children:
+        controlplanes:
+        workers:
+    ha:
+      children:
+        non_ha:
+        etcd:
+        loadbalancers:
     deployments:
       children:
         helm:
