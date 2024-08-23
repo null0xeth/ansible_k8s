@@ -1,7 +1,0 @@
----
-- name: "Install the {{ config['runtime']['interface'] }} container runtime"
-  ansible.builtin.include_tasks: "{{ runtime[config['runtime']['interface']]['ansible_task'] }}"
-
-- name: Install a container networking interface
-  ansible.builtin.include_tasks: cni/cni.yml
-

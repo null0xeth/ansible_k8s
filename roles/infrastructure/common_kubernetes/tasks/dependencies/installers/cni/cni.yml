@@ -1,9 +1,0 @@
----
-- name: Check if container networking is already installed
-  ansible.builtin.include_tasks: pre_checks.yml
-
-- name: Install the container networking interface
-  when: not has_cni.stat.exists
-  ansible.builtin.include_tasks: installer.yml
-
-

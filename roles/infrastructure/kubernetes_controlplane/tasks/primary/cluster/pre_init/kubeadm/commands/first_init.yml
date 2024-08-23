@@ -1,6 +1,0 @@
----
-- name: Initialize the kubernetes controlplane
-  become: true
-  ansible.builtin.shell: "{{ kubernetes_commands['kubeadm']['init']['controlplane'] }}"
-  register: kubeadm_init_output
-

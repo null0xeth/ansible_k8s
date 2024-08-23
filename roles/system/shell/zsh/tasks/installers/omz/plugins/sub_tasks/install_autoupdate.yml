@@ -1,7 +1,0 @@
----
-- name: Install autoupdate-zsh-plugin plugin
-  ansible.builtin.git:
-    repo: "{{ shell['omz']['autoupdate']['download'] }}"
-    dest: "{{ shell['omz']['autoupdate']['install_dir'] }}"
-    depth: 1
-

@@ -1,0 +1,26 @@
+---
+- name: Check if CNI is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ runtime['cni']['binary_path'] }}"
+  register: has_cni
+
+- name: Install Container Networking
+  when: not has_cni.stat.exists
+  block:
+    - name: Cni directory
+      become: true
+      ansible.builtin.file:
+        path: "{{ runtime['cni']['install_dir'] }}"
+        state: "{{ directory_state }}"
+        mode: "0755"
+
+    - name: install the latest CNI release
+      become: true
+      ansible.builtin.unarchive:
+        src: "{{ runtime['cni']['download'] }}"
+        dest: "{{ runtime['cni']['install_dir'] }}"
+        extra_opts: [--strip-components=1]
+        remote_src: true
+      notify:
+        - restart containerd

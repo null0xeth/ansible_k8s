@@ -1,3 +1,0 @@
----
-- name: Configure access on the controller
-  ansible.builtin.include_tasks: post_init/configure_controller.yml

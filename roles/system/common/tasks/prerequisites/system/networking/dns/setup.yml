@@ -1,6 +1,0 @@
----
-- name: Prepare the /etc/hosts file
-  ansible.builtin.include_tasks: nodes.yml
-
-- name: Add the loadbalancer VIP to the /etc/hosts file
-  ansible.builtin.include_tasks: vip.yml

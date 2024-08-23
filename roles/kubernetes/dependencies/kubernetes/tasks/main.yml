@@ -1,0 +1,14 @@
+---
+- name: Install the container management runtime
+  ansible.builtin.include_tasks: container/
+
+- name: Install the kubernetes repository and packages
+  ansible.builtin.include_tasks: repositories/kubernetes.yml
+
+- name: Trigger all handlers first
+  ansible.builtin.meta: flush_handlers
+
+- name: Reboot all nodes to persist changes
+  become: true
+  ansible.builtin.reboot:
+    msg: "Rebooting node: {{ inventory_hostname }}"

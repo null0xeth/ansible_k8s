@@ -1,0 +1,28 @@
+---
+- name: Check if kubernetes is already initialized
+  ansible.builtin.include_tasks: common/prerequisites/checks/pre_checks.yml
+
+- name: Provision the worker nodes
+  when: not kubernetes_initialized.stat.exists
+  block:
+    - name: Create the required directories
+      ansible.builtin.include_tasks: common/prerequisites/directories/create_directories.yml
+
+    - name: Print the worker node join command
+      delegate_to: "{{ groups['controlplanes'][0] }}"
+      become: true
+      ansible.builtin.shell: "{{ kubernetes_commands['kubeadm']['generate']['join_worker'] }}"
+      register: worker_node_join_command
+
+    - name: Set the worker node join command globally.
+      ansible.builtin.set_fact:
+        worker_join_command: "{{ worker_node_join_command.stdout }}"
+      when: worker_node_join_command.stdout is defined
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      with_items: "{{ lookup('inventory_hostnames', 'workers', wantlist=True) }}"
+
+    - name: Initialize the worker node
+      become: true
+      ansible.builtin.shell: "{{ worker_join_command }}"
+      register: worker_join_output

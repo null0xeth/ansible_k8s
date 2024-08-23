@@ -1,5 +1,0 @@
----
-- name: Install python and it's dependencies
-  ansible.builtin.include_tasks: python/install_python_deps.yml
-# - name: Install golang and it's dependencies
-#   ansible.builtin.include_tasks: golang/install_golang_deps.yml

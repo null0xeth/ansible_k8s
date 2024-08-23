@@ -1,6 +1,0 @@
----
-# - name: Install the python modules needed for ansible managed kubernetes
-#   ansible.builtin.include_tasks: pip_kubernetes.yml
-
-- name: Install the python modules needed by the github API
-  ansible.builtin.include_tasks: github.yml

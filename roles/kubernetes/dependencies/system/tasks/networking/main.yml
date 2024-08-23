@@ -1,0 +1,26 @@
+---
+- name: Make nodes resolvable by dns
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ item.file }}"
+    regexp: "^{{ item.entry }}"
+    line: "{{ item.entry }}"
+    state: present
+    insertbefore: BOF
+  loop:
+    - {
+        file: /etc/hosts,
+        entry: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} {{ inventory_hostname }} {{ inventory_hostname }}",
+      }
+    - {
+        file: /etc/cloud/templates/hosts.debian.tmpl,
+        entry: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} {{ inventory_hostname }} {{ inventory_hostname }}",
+      }
+    - {
+        file: /etc/hosts,
+        entry: "{{ config['vip']['ipv4'] }} {{ config['vip']['dns'] }} {{ config['vip']['dns'] }}",
+      }
+    - {
+        file: /etc/cloud/templates/hosts.debian.tmpl,
+        entry: "{{ config['vip']['ipv4'] }} {{ config['vip']['dns'] }} {{ config['vip']['dns'] }}",
+      }

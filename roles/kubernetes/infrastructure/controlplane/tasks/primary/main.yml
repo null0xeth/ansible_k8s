@@ -1,0 +1,22 @@
+---
+- name: Check if kubernetes is already initialized
+  ansible.builtin.include_tasks: ../common/prerequisites/
+
+- name: Provision the first controlplane
+  when: not kubernetes_initialized.stat.exists
+  block:
+    - name: Fetch etcd certificates
+      ansible.builtin.include_tasks: prerequisites/
+
+    - name: Initialize the kubernetes controlplane
+      ansible.builtin.include_tasks: pre_deployment/
+
+    - name: Generate the controlplane join command
+      ansible.builtin.include_tasks: post-deployment/kubeadm/
+
+    - name: Check if the kubeconfig file exists
+      ansible.builtin.include_tasks: ../common/cluster/
+
+    - name: "Configure {{ config['cni'] }} as the cluster CNI"
+      when: config['cni'] == 'flannel'
+      ansible.builtin.include_tasks: "post_deployment/cni/{{ config['cni'] }}.yml"

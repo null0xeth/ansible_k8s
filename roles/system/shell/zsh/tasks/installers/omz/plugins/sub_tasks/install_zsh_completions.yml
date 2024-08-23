@@ -1,7 +1,0 @@
----
-- name: Install zsh-completions plugin
-  ansible.builtin.git:
-    repo: "{{ shell['omz']['completions']['download'] }}"
-    dest: "{{ shell['omz']['completions']['install_dir'] }}"
-    depth: 1
-

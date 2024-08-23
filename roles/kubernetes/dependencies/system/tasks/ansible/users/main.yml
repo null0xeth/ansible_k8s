@@ -1,0 +1,15 @@
+---
+- name: "Ensure group {{ global_primary_user }} exists"
+  become: true
+  ansible.builtin.group:
+    name: "{{ global_primary_user }}"
+    state: present
+
+- name: Create the primary ansible user account
+  become: true
+  ansible.builtin.user:
+    name: "{{ global_primary_user }}"
+    state: present
+    create_home: true
+    groups: "{{ global_user_groups }}"
+    append: true

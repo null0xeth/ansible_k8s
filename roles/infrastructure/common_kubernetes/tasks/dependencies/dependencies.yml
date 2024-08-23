@@ -1,4 +1,0 @@
----
-- name: Install kubernetes dependencies
-  ansible.builtin.include_tasks: installers/install_k8s_deps.yml
-

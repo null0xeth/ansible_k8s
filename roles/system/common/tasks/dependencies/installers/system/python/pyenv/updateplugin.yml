@@ -1,8 +1,0 @@
----
-- name: Install PyEnv-update plugin
-  ansible.builtin.git:
-    repo: "{{ system['pyenv_plugins']['update']['download'] }}"
-    dest: "{{ system['pyenv_plugins']['update']['install_dir'] }}"
-    version: "{{ system['pyenv_plugins']['update']['version'] }}"
-    update: true
-

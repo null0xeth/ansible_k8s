@@ -1,8 +1,0 @@
----
-- name: Check QEMU guest agent
-  become: true
-  ansible.builtin.debug:
-    msg: Checking qemu guest agent and rsync
-  notify:
-    - enable qemu_agent
-    - enable rsync

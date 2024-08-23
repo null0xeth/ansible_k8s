@@ -1,0 +1,33 @@
+---
+- name: Check if procs is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ sysutils['procs']['binary_path'] }}"
+  register: has_procs
+
+- name: Check if Eza is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ sysutils['eza']['binary_path'] }}"
+  register: has_eza
+
+- name: Check if fd-find is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ binary_mapping['sysutils']['fd_find'] }}"
+  register: has_fd_find
+
+- name: Check which utilities are already installed
+  ansible.builtin.include_tasks: checks.yml
+
+- name: Install procs
+  when: not has_procs.stat.exists
+  ansible.builtin.include_tasks: sub_tasks/install_procs.yml
+
+- name: Install eza
+  when: not has_eza.stat.exists
+  ansible.builtin.include_tasks: sub_tasks/install_eza.yml
+
+- name: Install fd-find
+  when: not has_fd_find.stat.exists
+  ansible.builtin.include_tasks: sub_tasks/install_fd_find.yml

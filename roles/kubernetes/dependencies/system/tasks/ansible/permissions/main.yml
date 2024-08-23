@@ -1,0 +1,20 @@
+---
+- name: Check if passwordless sudo is already enabled
+  become: true
+  ansible.builtin.stat:
+    path: "{{ sub_file_mappings['system']['sudoers_d']['passwordless_sudo'] }}"
+  register: passwordless_active
+
+- name: Enable passwordless sudo
+  become: true
+  when: not passwordless_active.stat.exists
+  ansible.builtin.copy:
+    dest: "{{ sub_file_mappings['system']['sudoers_d']['passwordless_sudo'] }}"
+    content: "{{ global_primary_user }} ALL=(ALL) NOPASSWD:ALL"
+
+- name: enable SSH forwarding for sudo
+  become: true
+  ansible.builtin.lineinfile:
+    dest: "{{ file_mappings['system']['sudoers'] }}"
+    insertafter: '^#?\s*Defaults\s+env_keep\b'
+    line: 'Defaults    env_keep += "SSH_AUTH_SOCK"'

@@ -1,8 +1,0 @@
----
-- name: Append the go binary to PATH
-  become: true
-  ansible.builtin.copy:
-    mode: '0755'
-    dest: "{{ sub_file_mappings['home']['omz']['custom']['add_go_to_path'] }}"
-    content: "export PATH=$PATH:{{ sub_file_mappings['system']['golang']['binary'] }}"
-

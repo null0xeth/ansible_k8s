@@ -1,6 +1,0 @@
----
-- name: Install zsh-syntax-highlighting plugin
-  ansible.builtin.git:
-    repo: "{{ shell['omz']['syntaxhl']['download'] }}"
-    dest: "{{ shell['omz']['syntaxhl']['install_dir'] }}"
-    depth: 1

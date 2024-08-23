@@ -1,6 +1,0 @@
----
-- name: Ensure that all required groups have been created
-  ansible.builtin.include_tasks: create_primary_groups.yml
-
-- name: Ensure that the primary ansible account is created and added to all groups
-  ansible.builtin.include_tasks: create_primary_user.yml

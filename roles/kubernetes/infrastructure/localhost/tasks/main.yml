@@ -1,0 +1,37 @@
+---
+- name: Check if config is already symlinked
+  become: true
+  delegate_to: localhost
+  ansible.builtin.stat:
+    path: "{{ sub_file_mappings['home']['kube']['config'] }}"
+  register: kubernetes_config
+
+- name: Remove the old kube directory
+  when: kubernetes_config.stat.exists
+  become: true
+  delegate_to: localhost
+  ansible.builtin.file:
+    path: "/home/{{ global_primary_user }}/.kube"
+    state: absent
+
+- name: Configure the ansible controller
+  when: not kubernetes_config.stat.exists
+  block:
+    - name: Ensure .kube directory exists.
+      become: true
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ sub_mapping['home']['kube'] }}"
+        state: directory
+        owner: "{{ global_primary_user }}"
+        group: "{{ global_primary_user }}"
+        mode: "0755"
+    - name: "Copy the kubernetes admin.conf to {{ sub_file_mappings['home']['kube']['config'] }}"
+      become: true
+      ansible.builtin.fetch:
+        src: "{{ sub_file_mappings['system']['kubernetes']['core']['adminconf'] }}"
+        dest: "{{ sub_file_mappings['home']['kube']['config'] }}"
+        mode: "0755"
+        owner: "{{ global_primary_user }}"
+        group: "{{ global_primary_user }}"
+        flat: true

@@ -1,0 +1,55 @@
+---
+- name: Check if starship is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ binary_mapping['shell']['starship'] }}"
+  register: has_starship
+
+- name: Check if the starship installation script is present
+  become: true
+  ansible.builtin.stat:
+    path: "{{ file_mappings['tmp']['starship'] }}"
+  register: has_starship_script
+
+- name: Install the starship shell prompt
+  when: not has_starship.stat.exists
+  block:
+    - name: Fetch the starship install script
+      when: not has_starship_script.stat.exists
+      become: true
+      ansible.builtin.get_url:
+        url: "{{ shell['prompt']['starship']['download'] }}"
+        dest: "{{ shell['prompt']['starship']['installer_path'] }}"
+        mode: "0755"
+      register: starship_installation_script
+
+    - name: Install starship with installation script
+      become: true
+      ansible.builtin.command: "{{ shell['prompt']['starship']['install_command'] }}"
+      when: starship_installation_script.changed
+
+    - name: Copy zshrc (for starship)
+      ansible.builtin.copy:
+        src: files/starship
+        dest: "{{ file_mappings['home']['zshrc'] }}"
+        mode: "0755"
+        force: true
+        owner: "{{ global_primary_user }}"
+        group: "{{ global_primary_user }}"
+
+- name: Add Pyenv to zshrc
+  ansible.builtin.blockinfile:
+    path: "{{ file_mappings['home']['zshrc'] }}"
+    block: |
+      export PYENV_ROOT="{{ system['pyenv']['install_dir'] }}"
+      [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+      eval "$(pyenv init -)"
+      eval "$(pyenv virtualenv-init -)"
+    state: present
+
+- name: Append the go binary to PATH
+  become: true
+  ansible.builtin.copy:
+    mode: "0755"
+    dest: "{{ sub_file_mappings['home']['omz']['custom']['add_go_to_path'] }}"
+    content: "export PATH=$PATH:{{ sub_file_mappings['system']['golang']['binary'] }}"

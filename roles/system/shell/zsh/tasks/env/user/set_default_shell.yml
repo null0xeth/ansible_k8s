@@ -1,7 +1,0 @@
----
-- name: "Change user shell to {{ sysconfig['user_shell'] }}"
-  become: true
-  ansible.builtin.user:
-    name: "{{ global_primary_user }}"
-    shell: "{{ directory_mapping['usr']['bin'][sysconfig['user_shell']] }}"
-

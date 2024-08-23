@@ -1,8 +1,0 @@
----
-- name: Install the containerd runc
-  become: true
-  ansible.builtin.get_url:
-    url: https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
-    dest: "{{ runtime['containerd_runc']['binary_path'] }}"
-    mode: '0755'
-

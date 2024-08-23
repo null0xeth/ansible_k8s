@@ -1,0 +1,48 @@
+---
+- name: Check if zsh-autosuggestions is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ shell['omz']['autosuggestions']['plugin_path'] }}"
+  register: autosuggestions_installed
+
+- name: Check if zsh-completions is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ shell['omz']['completions']['plugin_path'] }}"
+  register: completions_installed
+
+- name: Check if zsh-syntax-highlighting is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ shell['omz']['syntaxhl']['plugin_path'] }}"
+  register: syntaxhl_installed
+
+- name: Check if zsh-autoupdate-plugin is installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ shell['omz']['autoupdate']['plugin_path'] }}"
+  register: autoupdate_installed
+
+- name: Install zsh-autosuggestions plugin
+  ansible.builtin.git:
+    repo: "{{ shell['omz']['autosuggestions']['download'] }}"
+    dest: "{{ shell['omz']['autosuggestions']['install_dir'] }}"
+    depth: 1
+
+- name: Install autoupdate-zsh-plugin plugin
+  ansible.builtin.git:
+    repo: "{{ shell['omz']['autoupdate']['download'] }}"
+    dest: "{{ shell['omz']['autoupdate']['install_dir'] }}"
+    depth: 1
+
+- name: Install zsh-syntax-highlighting plugin
+  ansible.builtin.git:
+    repo: "{{ shell['omz']['syntaxhl']['download'] }}"
+    dest: "{{ shell['omz']['syntaxhl']['install_dir'] }}"
+    depth: 1
+
+- name: Install zsh-completions plugin
+  ansible.builtin.git:
+    repo: "{{ shell['omz']['completions']['download'] }}"
+    dest: "{{ shell['omz']['completions']['install_dir'] }}"
+    depth: 1

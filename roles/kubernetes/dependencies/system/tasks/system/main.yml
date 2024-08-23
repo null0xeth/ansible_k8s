@@ -1,0 +1,9 @@
+---
+- name: Ensure all required packages are installed
+  ansible.builtin.include_tasks: packages.yml
+
+- name: Prepare the kernel
+  ansible.builtin.include_tasks: kernel.yml
+
+- name: Ensure swap is disabled in fstab
+  ansible.builtin.include_tasks: swap.yml

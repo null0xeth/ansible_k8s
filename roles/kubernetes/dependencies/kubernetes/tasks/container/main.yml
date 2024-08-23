@@ -1,0 +1,6 @@
+---
+- name: Install the container runtime
+  ansible.builtin.include_tasks: engine/containerd.yml
+
+- name: Install the container network interface
+  ansible.builtin.include_tasks: network/cni.yml

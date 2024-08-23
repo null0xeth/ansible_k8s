@@ -1,7 +1,0 @@
----
-- name: Configure Pyenv
-  run_once: true
-  ansible.builtin.shell: |
-    export PATH="{{ system['pyenv']['install_dir'] }}/bin:$PATH"
-    pyenv install -v "{{ version_map['python'] }}"
-    pyenv global "{{ version_map['python'] }}"
