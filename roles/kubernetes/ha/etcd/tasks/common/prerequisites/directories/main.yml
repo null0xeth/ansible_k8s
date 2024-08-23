@@ -5,7 +5,7 @@
     path: "{{ mapped_directories['system']['kubernetes']['pki']['etcd'] }}"
     recurse: true
     state: directory
-    mode: '0755'
+    mode: "0755"
     owner: root
     group: root
 
@@ -15,6 +15,13 @@
     path: "{{ mapped_directories['system']['kubernetes']['manifests'] }}"
     recurse: true
     state: directory
-    mode: '0755'
+    mode: "0755"
     owner: root
     group: root
+
+- name: Create the kubelet service dir
+  become: true
+  ansible.builtin.file:
+    path: "{{ directory_mapping['system']['systemd']['kubelet'] }}"
+    state: directory
+    mode: "0755"

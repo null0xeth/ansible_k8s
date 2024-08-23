@@ -1,0 +1,14 @@
+---
+- name: "Create certificates for all etcd members"
+  become: true
+  block:
+    - name: Initialize the etcd certificate authority
+      when: not etcd_initialized.stat.exists
+      become: true
+      ansible.builtin.command: "{{ kubernetes_commands['kubeadm']['init']['etcd']['ca'] }}"
+      register: kubeadm_init_certs
+
+    - name: Create certificates for all etcd members
+      become: true
+      ansible.builtin.command: "{{ item }}"
+      with_items: "{{ etcd_cmds }}"

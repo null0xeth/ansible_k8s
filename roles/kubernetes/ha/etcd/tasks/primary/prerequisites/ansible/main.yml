@@ -1,4 +1,38 @@
 ---
+- name: "Prepare {{ groups['etcd'][0] }}"
+  block:
+    - name: Check if the ssh-key is already present
+      become: true
+      ansible.builtin.stat:
+        path: "{{ primary_ssh_path }}"
+      register: has_ssh_key
+
+    - name: "Generate ssh keys for {{ groups['etcd'][0] }}"
+      #when: not has_ssh_key.stat.exists
+      block:
+        - name: "Generate ssh-keys for {{ groups['etcd'][0] }}"
+          community.crypto.openssh_keypair:
+            path: "{{ primary_ssh_path }}"
+            type: ed25519
+            comment: "{{ global_primary_user }}@{{ inventory_hostname }}"
+          register: etcd_keys
+
+    - name: Set key globally.
+      ansible.builtin.set_fact:
+        etcd_key: >
+          {{ etcd_keys.public_key }}
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      loop: "{{ etcd_group_hosts + [ global_controlplane_hosts[0] ] }}"
+
+    - name: Add pubkey to nodes
+      loop: "{{ etcd_group_hosts + [ global_controlplane_hosts[0] ] }}"
+      delegate_to: "{{ item }}"
+      ansible.posix.authorized_key:
+        user: "{{ global_primary_user }}"
+        state: present
+        key: "{{ etcd_key }}"
+
 - name: Set etcd file facts
   loop: "{{ groups['etcd'] }}"
   ansible.builtin.set_fact:

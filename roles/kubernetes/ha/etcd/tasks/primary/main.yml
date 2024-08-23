@@ -1,0 +1,27 @@
+---
+- name: Check if etcd is already initialized
+  ansible.builtin.include_tasks: ../common/prerequisites/checks/
+
+- name: Fire up the first etcd member
+  when: not etcd_initialized.stat.exists
+  block:
+    - name: Create the required directories
+      ansible.builtin.include_tasks: ../common/prerequisites/directories/
+
+    - name: Ensure all facts are properly set
+      ansible.builtin.include_tasks: prerequisites/ansible/
+
+    - name: Create kubeadm config files for all members
+      when: not kubeadmcfg.stat.exists
+      ansible.builtin.include_tasks: prerequisites/config/
+
+    - name: Generate certificates for all etcd members
+      ansible.builtin.include_tasks: certificates.yml
+
+    - name: Initialize the etcd cluster
+      become: true
+      ansible.builtin.shell: "{{ kubernetes_commands['kubeadm']['init']['etcd']['node'] }}"
+      register: etcd_init
+
+    - ansible.builtin.debug:
+        msg: "{{ etcd_init }}"

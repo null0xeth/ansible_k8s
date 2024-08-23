@@ -1,26 +1,20 @@
 ---
 - name: Check if etcd is already initialized
-  ansible.builtin.include_tasks: common/prerequisites/checks/etcd_conf.yml
-
-- name: Check if kubeadm is already initialized
-  ansible.builtin.include_tasks: common/prerequisites/checks/kubernetes_cluster.yml
+  ansible.builtin.include_tasks: ../common/prerequisites/checks/
 
 - name: Move etcd certificates to the other etcd members
   when: not etcd_initialized.stat.exists
-  ansible.builtin.include_tasks: secondary/certs/distribute_certs.yml
+  ansible.builtin.include_tasks: certificates.yml
 
 - name: Fire up the other etcd members
   when: not etcd_initialized.stat.exists
   block:
-    - name: Check if the kubelet is already configured
-      ansible.builtin.include_tasks: common/prerequisites/checks/kubelet_config.yml
-
     - name: Create the required directories
-      ansible.builtin.include_tasks: common/prerequisites/directories/kubernetes/create_kubernetes_dirs.yml
+      ansible.builtin.include_tasks: ../common/prerequisites/directories/
 
     - name: Create config files for the kubelet
       when: not has_kubelet_conf_file.stat.exists
-      ansible.builtin.include_tasks: common/prerequisites/config/kubelet/create_kubeletconf.yml
+      ansible.builtin.include_tasks: common/prerequisites/config/
 
     - name: Set current host
       ansible.builtin.set_fact:
@@ -55,4 +49,3 @@
 
     - ansible.builtin.debug:
         msg: "{{ etcd_init }}"
-

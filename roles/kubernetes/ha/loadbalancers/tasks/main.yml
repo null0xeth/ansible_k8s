@@ -1,4 +1,6 @@
 ---
-- name: Install the required loadbalancer components
-  ansible.builtin.include_tasks: installers/loadbalancers.yml
+- name: Install keeppalived
+  ansible.builtin.include_tasks: keepalived/
 
+- name: Install happroxy
+  ansible.builtin.include_tasks: haproxy/

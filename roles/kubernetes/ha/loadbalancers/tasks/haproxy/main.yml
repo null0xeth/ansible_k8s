@@ -1,0 +1,27 @@
+---
+- name: Check if Haproxy is already installed
+  ansible.builtin.include_tasks: prerequisites/
+
+- name: Initialize Haproxy
+  when: not has_haproxy.stat.exists
+  block:
+    - name: Install haproxy
+      become: true
+      ansible.builtin.apt:
+        name: haproxy
+        state: present
+        update_cache: true
+        force_apt_get: true
+      notify: enable haproxy
+
+    - name: Create the haproxy config files
+      become: true
+      vars:
+        _global_controlplane_hosts: "{{ global_controlplane_hosts }}"
+      ansible.builtin.template:
+        src: "{{ lb_templates['haproxy'] }}"
+        dest: "{{ lb_sub_file_mappings['system']['haproxy']['config'] }}"
+        owner: haproxy
+        group: haproxy
+        mode: "0644"
+      notify: restart haproxy

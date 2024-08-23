@@ -1,6 +1,0 @@
----
-- name: Check if Haproxy is already installed
-  become: true
-  ansible.builtin.stat:
-    path: "{{ lb_sub_file_mappings['system']['haproxy']['config'] }}"
-  register: has_haproxy

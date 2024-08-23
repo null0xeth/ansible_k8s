@@ -1,9 +1,8 @@
 ---
 - name: Initialize the first etcd member
   when: inventory_hostname in groups['etcd'][0]
-  ansible.builtin.include_tasks: primary/init_etcd.yml
+  ansible.builtin.include_tasks: primary/
 
 - name: Initialize the secondary etcd members
   when: not inventory_hostname in groups['etcd'][0]
-  ansible.builtin.include_tasks: join_etcd.yml
-
+  ansible.builtin.include_tasks: secondary/

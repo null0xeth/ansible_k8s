@@ -1,6 +1,0 @@
----
-- name: Create the kubelet directory in systemd
-  ansible.builtin.include_tasks: kubelet.yml
-
-- name: Create the other kubernetes directories
-  ansible.builtin.include_tasks: other.yml
