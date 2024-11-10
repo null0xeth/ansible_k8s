@@ -1,23 +1,20 @@
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
-
-nodeRegistration:
-  criSocket: "unix:///var/run/containerd/containerd.sock"
-
+certificateKey: "68c490d7499c8f794d6a80fbb330f352db1491f2dba474906fcdd48cf9348585"
 skipPhases:
   - preflight
-  - addon/kube-proxy
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
-controlPlaneEndpoint: "{{ config['vip']['dns'] }}:6443" # change this (see below)
+controlPlaneEndpoint: "k8s.honker.dev:6443" 
+kubernetesVersion: "v1.31.2"
 etcd:
   external:
     endpoints:
-      {% for etcdnode in etcd_ips %}
-      - "https://{{ etcdnode }}:2379"
-      {% endfor %}
+    {% for etcdnode in etcd_ips %}
+    - https://{{ etcdnode }}:2379
+    {% endfor %}
 
     caFile: {{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][0] }}
     certFile: {{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][1] }}
@@ -29,8 +26,10 @@ apiServer:
   extraArgs:
     enable-aggregator-routing: "true"
     allow-privileged: "true"
-    authorization-mode: "Webhook,RBAC,Node"
     enable-bootstrap-token-auth: "true"
+    advertise-address: "192.168.155.69"
+    bind-address: "0.0.0.0"
+
 networking:
   podSubnet: {{ cluster_cni[config['cni']]['pod_network'] | default('10.10.0.0/16') }}
 
@@ -38,9 +37,9 @@ clusterName: "honklabs"
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
-rotateCertificates: true
+containerRuntimeEndpoint: unix:///var/run/containerd/containerd.sock
 serverTLSBootstrap: true
 cgroupDriver: systemd
-containerRuntimeEndpoint: "unix:///var/run/containerd/containerd.sock"
-
+rotateCertificates: true
+staticPodPath: /etc/kubernetes/manifests
 

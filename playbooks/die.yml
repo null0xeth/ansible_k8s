@@ -5,4 +5,9 @@
     - name: die
       ansible.builtin.shell: |
         sudo kubeadm reset -f && sudo rm -r /etc/kubernetes && sudo rm -r ~/.kube;
+        sudo apt-get remove kubeadm kubectl kubernetes-cni kubelet -y
         sudo rm -r /tmp/etcd*;
+        sudp ipvsadm --clear && sudo rm -f $HOME/.kube && rm -r /var/lib/kubelet && sudo rm -r /etc/systemd/systemd/kubelet.service.d;
+        sudo etcdctl del "" --prefix;
+        sudo rm -f /etc/cni/net.d/10-flannel.conflist;
+        sudo iptables -F && sudo iptables -t nat -F && sudo iptables -t mangle -F && sudo iptables -X;

@@ -10,7 +10,10 @@
     dest: "{{ sub_mapping['system']['kubernetes'] }}/"
     mode: push
     recursive: true
-    rsync_path: "sudo rsync"
+    set_remote_user: true
+    private_key: ~/.ssh/ansible_ed25519
+    perms: true
+    dirs: true
   delegate_to: "{{ groups['etcd'][0] }}"
 
 - name: "Copy kubeadm config files from etcd01 to secondary etcd"
@@ -19,5 +22,51 @@
     src: "/tmp/{{ current_host }}/kubeadmcfg.yaml"
     dest: "{{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
     mode: push
-    rsync_path: "sudo rsync"
+    set_remote_user: true
+    private_key: ~/.ssh/ansible_ed25519
+    perms: true
   delegate_to: "{{ groups['etcd'][0] }}"
+# ---
+# - name: Set current host
+#   ansible.builtin.set_fact:
+#     current_host: "{{ inventory_hostname }}"
+#
+# - name: Fetch /pki from etcd01 to the control node
+#   become: true
+#   delegate_to: "{{ groups['etcd'][0] }}"
+#   ansible.builtin.fetch:
+#     src: "/tmp/{{ current_host }}/pki"
+#     dest: "/tmp/etcd_pki/"
+#     flat: no
+#     fail_on_missing: yes
+#     validate_checksum: yes
+#
+# - name: Copy pki to etcd members
+#   become: true
+#   ansible.builtin.copy:
+#     src: "/tmp/etcd_pki/tmp/{{ current_host }}/pki"
+#     dest: "{{ sub_mapping['system']['kubernetes'] }}/"
+#     owner: root
+#     group: root
+#     mode: "0755"
+#     remote_src: true
+#
+# - name: Fetch kubeadm config file from etcd01 to the control node
+#   become: true
+#   delegate_to: "{{ groups['etcd'][0] }}"
+#   ansible.builtin.fetch:
+#     src: "/tmp/{{ current_host }}/kubeadmcfg.yaml"
+#     dest: "/tmp/etcd_kubeadmcfg/"
+#     flat: yes
+#     fail_on_missing: yes
+#     validate_checksum: yes
+#
+# - name: Copy kubeadm config to etcd members
+#   become: true
+#   ansible.builtin.copy:
+#     src: "/tmp/etcd_kubeadmcfg/kubeadmcfg.yaml"
+#     dest: "{{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
+#     owner: root
+#     group: root
+#     mode: "0644"
+#     remote_src: true

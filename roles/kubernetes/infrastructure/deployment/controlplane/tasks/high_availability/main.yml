@@ -43,9 +43,27 @@
   ansible.posix.synchronize:
     src: "{{ item }}"
     dest: "{{ item }}"
-    use_ssh_args: true
     mode: push
     #recursive: true
-    private_key: "/home/null0x/.ssh/ansible_ed25519" # Use your actual SSH key path
-    rsync_path: "sudo rsync"
-  delegate_to: etcd01
+  delegate_to: "{{ groups['etcd'][0] }}"
+# - name: Fetch etcd certs from etcd01 to the control node
+#   become: true
+#   delegate_to: "{{ groups['etcd'][0] }}
+#   loop: "{{ local_cluster_certs }}"
+#   ansible.builtin.fetch:
+#     src: "{{ item }}"
+#     dest: "/tmp/etcd_certs/"
+#     flat: yes
+#     fail_on_missing: yes
+#     validate_checksum: yes
+#
+# - name: Copy certs to master01
+#   loop: "{{ local_cluster_certs }}"
+#   delegate_to: master01
+#   ansible.builtin.copy:
+#     src: "/tmp/etcd_certs/{{ item | basename }}"
+#     dest: "{{ item }}"
+#     owner: root
+#     group: root
+#     mode: "0644"
+#     remote_src: true

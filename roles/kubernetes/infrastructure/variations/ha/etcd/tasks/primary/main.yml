@@ -19,13 +19,19 @@
       #when: not kubeadmcfg.stat.exists
       ansible.builtin.include_tasks: prerequisites/config/main.yml
 
-    - name: Generate certificates for all etcd members
-      ansible.builtin.include_tasks: certificates.yml
+- name: Dummy
+  become: true
+  ansible.builtin.shell: echo whoami
+  notify:
+    - restart kubelet
 
-    - name: Initialize the etcd cluster
-      become: true
-      ansible.builtin.shell: "{{ kubernetes_commands['kubeadm']['init']['etcd']['node'] }}"
-      register: etcd_init
+- name: Generate certificates for all etcd members
+  ansible.builtin.include_tasks: certificates.yml
 
-    - ansible.builtin.debug:
-        msg: "{{ etcd_init }}"
+- name: Initialize the etcd cluster
+  become: true
+  ansible.builtin.shell: "{{ kubernetes_commands['kubeadm']['init']['etcd']['node'] }}"
+  register: etcd_init
+
+- ansible.builtin.debug:
+    msg: "{{ etcd_init }}"

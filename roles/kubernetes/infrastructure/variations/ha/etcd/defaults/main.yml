@@ -4,3 +4,5 @@ role_template_dir: "{{ role_path }}/templates"
 
 templates:
   kubeadmcfg_etcd: "{{ role_template_dir }}/kubeadm.j2"
+  kubeletservice: "{{ role_template_dir }}/kubelet-etcd-service.j2"
+  kubeletcfg: "{{ role_template_dir }}/kubeletconf.j2"

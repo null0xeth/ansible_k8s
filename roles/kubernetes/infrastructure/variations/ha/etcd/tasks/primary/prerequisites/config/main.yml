@@ -1,9 +1,34 @@
 ---
+- name: Create kubelet systemd file
+  become: true
+  ansible.builtin.template:
+    src: "{{ templates['kubeletservice'] }}"
+    dest: "/etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf"
+    mode: "0755"
+
+- name: Create kubelet config file
+  become: true
+  ansible.builtin.template:
+    src: "{{ templates['kubeletcfg'] }}"
+    dest: "/etc/systemd/system/kubelet.service.d/kubelet.conf"
+    mode: "0755"
+  notify:
+    - restart kubelet
+
 - name: Create configuration files for kubeadm
   become: true
   ansible.builtin.template:
     src: "{{ templates['kubeadmcfg_etcd'] }}"
     dest: "{{ global_tmp_dir }}/{{ item }}/kubeadmcfg.yaml"
     mode: "0755"
-  #loop: "{{ etcd_group_hosts }}"
-  loop: "{{ lookup('inventory_hostnames', 'etcd', wantlist=True) }}"
+  loop: "{{ groups['etcd'] }}"
+  loop_control:
+    loop_var: item
+# - name: Create configuration files for kubeadm
+#   become: true
+#   ansible.builtin.template:
+#     src: "{{ templates['kubeadmcfg_etcd'] }}"
+#     dest: "{{ global_tmp_dir }}/{{ item }}/kubeadmcfg.yaml"
+#     mode: "0755"
+#   #loop: "{{ etcd_group_hosts }}"
+#   loop: "{{ lookup('inventory_hostnames', 'etcd', wantlist=True) }}"
