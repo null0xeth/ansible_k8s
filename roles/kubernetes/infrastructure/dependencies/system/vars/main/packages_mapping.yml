@@ -1,0 +1,46 @@
+---
+common_base_packages:
+  # Proxmox - PIP
+  - python3-proxmoxer
+  - python3-hvac
+  # Other
+  - openvswitch-switch
+  - net-tools
+  # Core
+  - git
+  - curl
+  - unzip
+  - gpg
+  - wget
+  - jq
+  - apt-transport-https
+  - golang-go
+  - conntrack
+  - e2fsprogs
+  - gnupg
+  - ebtables
+  - ipset
+  - iptables
+  - libseccomp2
+  - openssl
+  - psmisc
+  - procps
+  - ca-certificates
+  - cron
+  - default-mta
+  - cryptsetup
+  - golang-github-vishvananda-netlink-dev
+  - ipvsadm
+  - socat
+  - rsync
+  - socat
+  - tar
+  - python3.12-minimal
+  - python3-apt
+  - python3-netaddr
+  - python3-netfilter
+  - python3-openssl
+  - python3-jsonpatch
+  - python3-kubernetes
+  - python3-github
+  - software-properties-common

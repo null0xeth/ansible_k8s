@@ -1,0 +1,8 @@
+---
+- name: die
+  hosts: cluster_internal
+  tasks:
+    - name: die
+      ansible.builtin.shell: |
+        sudo kubeadm reset -f && sudo rm -r /etc/kubernetes && sudo rm -r ~/.kube;
+        sudo rm -r /tmp/etcd*;

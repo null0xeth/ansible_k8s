@@ -4,9 +4,10 @@
 # Match your specific needs and requirements
 # Changes made to these variables will be automatically
 # processed in `config_derived.yml`
+global_high_availability_mode: true
 global_controlplane_hosts: "{{ lookup('inventory_hostnames', 'controlplanes', wantlist=True) }}"
 ## CLUSTER - NETWORKING - CNI:
-global_config_cni: cilium
+global_config_cni: flannel
 #global_config_cni_pod_cidr:
 
 ## CLUSTER - COMPONENTS - RUNTIME:
@@ -14,9 +15,9 @@ global_config_runtime: containerd
 global_config_cgroup: systemd
 
 ## CLUSTER - NETWORKING - LOADBALANCER - VIP:
-global_config_vip_ipv4: 192.168.139.69
-global_config_vip_interface: eth1
-global_config_vip_dns: vip2.chonk.city
+global_config_vip_ipv4: 192.168.155.69
+global_config_vip_interface: eth0
+global_config_vip_dns: k8s.honker.dev
 global_config_vip_port: 6443
 
 ## CLUSTER - NETWORKING - LOADBALANCER - SETTINGS:

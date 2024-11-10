@@ -1,0 +1,6 @@
+---
+- name: Install oh-my-zsh
+  ansible.builtin.include_tasks: omz/main.yml
+
+- name: Install the starship shell prompt
+  ansible.builtin.include_tasks: prompt/main.yml

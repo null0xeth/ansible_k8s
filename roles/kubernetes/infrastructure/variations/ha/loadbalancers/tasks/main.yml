@@ -1,0 +1,14 @@
+---
+- name: Install keeppalived
+  ansible.builtin.include_tasks: keepalived/main.yml
+
+- name: Install happroxy
+  ansible.builtin.include_tasks: haproxy/main.yml
+
+- name: Dummy
+  ansible.builtin.shell: echo whoami
+  notify:
+    - enable haproxy
+    - enable keepalived
+    - restart haproxy
+    - restart keepalived

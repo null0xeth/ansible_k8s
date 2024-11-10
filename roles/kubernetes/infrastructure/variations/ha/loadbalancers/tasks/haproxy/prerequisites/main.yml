@@ -1,0 +1,21 @@
+---
+- name: Check if Haproxy is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ lb_sub_file_mappings['system']['haproxy']['config'] }}"
+  register: has_haproxy
+# - name: "Ensure group haproxy exists"
+#   become: true
+#   ansible.builtin.group:
+#     name: present
+#     state: present
+#
+# - name: Create the primary haproxy account
+#   become: true
+#   ansible.builtin.user:
+#     name: haproxy
+#     system: true
+#     shell: "/sbin/nologin" # Optional: Set a non-login shell
+#     state: present
+#     groups: haproxy
+#    append: true

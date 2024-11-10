@@ -7,6 +7,6 @@
 
 ## Binary version pinning:
 pinned_binaries:
-  containerd: "v1.7.20"
-  runc: "v1.2.0-rc.2"
-  cni: "v1.5.1"
+  containerd: "v2.0.0"
+  runc: "v1.2.1"
+  cni: "v1.6.0"

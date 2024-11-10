@@ -1,9 +1,0 @@
----
-- name: Configure the user ENV
-  ansible.builtin.include_tasks: env/
-
-- name: Run all required installers
-  ansible.builtin.include_tasks: installers/
-
-- name: Install CLI applications
-  ansible.builtin.include_tasks: cli/

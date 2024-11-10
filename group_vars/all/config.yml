@@ -23,7 +23,7 @@ global_var_dir: /var
 
 global_role_base: "{{ global_home_dir }}/development/ansible/k8s/roles"
 regex_filter: '\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]'
-regex_filter_to: ''
+regex_filter_to: ""
 
 provision_base_workers: 3
-provision_extra_workers: 2
+#provision_extra_workers: 2

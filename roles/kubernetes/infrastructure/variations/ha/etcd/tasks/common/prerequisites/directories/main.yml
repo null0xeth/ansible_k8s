@@ -1,0 +1,27 @@
+---
+- name: Create the kubernetes certificate dirs
+  become: true
+  ansible.builtin.file:
+    path: "{{ mapped_directories['system']['kubernetes']['pki']['etcd'] }}"
+    recurse: true
+    state: directory
+    mode: "0755"
+    owner: null0x
+    group: null0x
+
+- name: Create the kubernetes manifests dirs
+  become: true
+  ansible.builtin.file:
+    path: "{{ mapped_directories['system']['kubernetes']['manifests'] }}"
+    recurse: true
+    state: directory
+    mode: "0755"
+    owner: null0x
+    group: null0x
+
+- name: Create the kubelet service dir
+  become: true
+  ansible.builtin.file:
+    path: "{{ directory_mapping['system']['systemd']['kubelet'] }}"
+    state: directory
+    mode: "0755"

@@ -1,0 +1,36 @@
+---
+### CHECKS ########
+- name: Check if kubernetes is already initialized
+  become: true
+  ansible.builtin.stat:
+    path: "{{ sub_file_mappings['system']['kubernetes']['core']['adminconf'] }}"
+  register: kubernetes_initialized
+
+- name: Check if a kubeadm config file is already present
+  become: true
+  ansible.builtin.stat:
+    path: "{{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
+  register: kubeadmcfg
+
+### CRUD OPS ########
+- name: Create the kubernetes certificate dirs
+  become: true
+  when: kubernetes_initialized.stat.exists
+  ansible.builtin.file:
+    path: "{{ mapped_directories['system']['kubernetes']['pki']['etcd'] }}"
+    recurse: true
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Create the kubernetes manifests dirs
+  when: not kubernetes_initialized.stat.exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ mapped_directories['system']['kubernetes']['manifests'] }}"
+    recurse: true
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root

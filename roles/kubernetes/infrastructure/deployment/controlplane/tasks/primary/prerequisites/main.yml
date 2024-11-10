@@ -1,0 +1,10 @@
+---
+- name: Create the kubeadm-config file
+  become: true
+  ansible.builtin.template:
+    src: "{{ templates['kubeadmcfg_controlplane'] }}"
+    dest: "{{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
+    mode: "0644"
+    force: true
+    owner: "{{ global_primary_user }}"
+    group: "{{ global_primary_user }}"

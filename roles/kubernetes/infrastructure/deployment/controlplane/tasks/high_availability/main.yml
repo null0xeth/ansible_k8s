@@ -1,0 +1,51 @@
+---
+- name: Fetch and register all etcd member ip addresses
+  ansible.builtin.set_fact:
+    etcd_ips: "{{ groups['etcd'] | map('extract', hostvars) | map(attribute='ansible_host') }}"
+
+- name: Register the clustercerts as a local fact
+  ansible.builtin.set_fact:
+    local_cluster_certs: "{{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'] }}"
+
+# - name: "Copy etcd certs from {{ groups['etcd'][0] }} to {{ groups['controlplanes'][0] }}"
+#   become: true
+#   loop: "{{ local_cluster_certs }}"
+#   ansible.posix.synchronize:
+#     src: "{{ item }}"
+#     dest: "{{ item }}"
+#     use_ssh_args: true
+#     mode: push
+#     rsync_path: "sudo rsync"
+#     ssh_args: "-i /home/null0x/.ssh/ansible_ed25519 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+#   delegate_to: etcd01
+# - name: "Copy etcd certs from {{ groups['etcd'][0] }} to {{ groups['controlplanes'][0] }}"
+#   loop: "{{ local_cluster_certs }}"
+#   ansible.posix.synchronize:
+#     src: "{{ item }}"
+#     dest: "{{ item }}"
+#     use_ssh_args: true
+#     mode: push
+#     rsync_path: "sudo rsync"
+#     private_key: "/home/null0x/.ssh/ansible_ed25519" # Use your actual SSH key path
+#   delegate_to: etcd01
+- name: Ensure the etcd directory exists on the destination node (master)
+  become: true
+  ansible.builtin.file:
+    path: "/etc/kubernetes/pki/etcd"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: "Copy etcd certs from etcd01 to master01"
+  become: true
+  loop: "{{ local_cluster_certs }}"
+  ansible.posix.synchronize:
+    src: "{{ item }}"
+    dest: "{{ item }}"
+    use_ssh_args: true
+    mode: push
+    #recursive: true
+    private_key: "/home/null0x/.ssh/ansible_ed25519" # Use your actual SSH key path
+    rsync_path: "sudo rsync"
+  delegate_to: etcd01

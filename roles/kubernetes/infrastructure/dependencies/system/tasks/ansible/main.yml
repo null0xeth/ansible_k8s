@@ -1,0 +1,6 @@
+---
+- name: Ensure all required groups and the primary ansible account have been created
+  ansible.builtin.include_tasks: users.yml
+
+- name: Ensure that all permissions for ansible have been set
+  ansible.builtin.include_tasks: permissions.yml

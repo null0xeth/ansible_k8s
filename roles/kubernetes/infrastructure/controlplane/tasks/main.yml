@@ -1,8 +1,0 @@
----
-- name: Provision the first controlplane
-  when: inventory_hostname in groups["controlplanes"][0]
-  ansible.builtin.include_tasks: primary/
-
-- name: Provision the secondary controlplanes
-  when: inventory_hostname not in groups["controlplanes"][0]
-  ansible.builtin.include_tasks: secondary/

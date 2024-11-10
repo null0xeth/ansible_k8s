@@ -1,0 +1,63 @@
+---
+- name: Check if Haproxy is already installed
+  ansible.builtin.include_tasks: prerequisites/main.yml
+
+- name: Initialize Haproxy
+  #when: not has_haproxy.stat.exists
+  block:
+    - name: Install haproxy
+      become: true
+      ansible.builtin.apt:
+        name: haproxy
+        state: present
+        update_cache: true
+        force_apt_get: true
+      notify: enable haproxy
+
+    - name: "Ensure group haproxy exists"
+      become: true
+      ansible.builtin.group:
+        name: haproxy
+        state: present
+
+    - name: Create the primary haproxy account
+      become: true
+      ansible.builtin.user:
+        name: haproxy
+        system: true
+        state: present
+        groups: haproxy
+        append: true
+
+    - name: Create the haproxy lib directory
+      become: true
+      ansible.builtin.file:
+        path: "{{ lb_directory_mapping['var']['lib']['haproxy'] }}"
+        recurse: true
+        state: directory
+        mode: "0755"
+        owner: haproxy
+        group: haproxy
+
+    - name: Create the haproxy etc directory
+      become: true
+      #when: not has_haproxy.stat.exists
+      ansible.builtin.file:
+        path: "{{ lb_sub_mapping['system']['haproxy'] }}"
+        recurse: true
+        state: directory
+        mode: "0755"
+        owner: haproxy
+        group: haproxy
+
+    - name: Create the haproxy config files
+      become: true
+      vars:
+        _global_controlplane_hosts: "{{ global_controlplane_hosts }}"
+      ansible.builtin.template:
+        src: "{{ lb_templates['haproxy'] }}"
+        dest: "{{ lb_sub_file_mappings['system']['haproxy']['config'] }}"
+        owner: haproxy
+        group: haproxy
+        mode: "0644"
+      notify: restart haproxy

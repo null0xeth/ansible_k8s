@@ -3,6 +3,7 @@
 # All variables in this file are populated automatically
 # Please edit `config.yml` and not this file
 config:
+  ha-mode: "{{ global_config_high_availability_mode | default(true) | bool}}"
   cni: "{{ global_config_cni | default('flannel') }}"
   runtime:
     interface: "{{ global_config_runtime | default('containerd') }}"
@@ -16,4 +17,3 @@ config:
     cidr: "{{ global_config_vip_ipv4 | default(hostvars[groups['controlplanes'][0]]['ansible_default_ipv4']['address']) }}/24"
     interface: "{{ global_config_vip_interface | default('eth0') }}"
     port: "{{ global_config_vip_port | default(6443) }}"
-

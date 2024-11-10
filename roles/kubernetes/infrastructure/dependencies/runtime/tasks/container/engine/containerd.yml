@@ -1,0 +1,97 @@
+---
+- name: Check if the containerd binary is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ runtime['containerd']['binary_path'] }}"
+  register: has_containerd_binary
+
+- name: Check if containerd.service is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ systemd['containerd_service']['service_path'] }}"
+  register: has_containerd_service
+
+- name: Check if containerd runc is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ runtime['containerd_runc']['binary_path'] }}"
+  register: has_containerd_runc
+
+- name: Check if containerd is already configured
+  become: true
+  ansible.builtin.stat:
+    path: "{{ _system['containerd']['config_path'] }}"
+  register: has_containerd_config
+
+- name: Install the containerd binary
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ runtime['containerd']['download'] }}"
+    dest: "{{ runtime['containerd']['install_dir'] }}"
+    extra_opts: [--strip-components=1]
+    remote_src: true
+
+- name: Create the service directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ systemd['containerd_service']['install_dir'] }}"
+    recurse: true
+    state: "{{ directory_state }}"
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Install the containerd service
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ systemd['containerd_service']['download'] }}"
+    dest: "{{ systemd['containerd_service']['install_dir'] }}"
+    mode: "0644"
+  notify:
+    - enable containerd
+
+- name: Create the service directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ systemd['containerd_service']['install_dir'] }}"
+    recurse: true
+    state: "{{ directory_state }}"
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Install the containerd service
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ systemd['containerd_service']['download'] }}"
+    dest: "{{ systemd['containerd_service']['install_dir'] }}"
+    mode: "0644"
+  notify:
+    - enable containerd
+
+- name: Install the containerd runc
+  become: true
+  ansible.builtin.get_url:
+    url: https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
+    dest: "{{ runtime['containerd_runc']['binary_path'] }}"
+    mode: "0755"
+
+- name: Create containerd directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ _system['containerd']['install_dir'] }}"
+    state: "{{ directory_state }}"
+    mode: "0755"
+
+- name: Add containerd config
+  become: true
+  ansible.builtin.template:
+    src: templates/containerd.j2
+    dest: "{{ _system['containerd']['config_path'] }}"
+    mode: "0644"
+  notify:
+    - restart containerd
+
+- name: Ensure all notified handlers are executed
+  become: true
+  ansible.builtin.meta: flush_handlers

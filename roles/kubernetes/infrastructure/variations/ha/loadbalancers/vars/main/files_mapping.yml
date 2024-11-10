@@ -1,0 +1,14 @@
+---
+lb_sub_file_mappings:
+  var:
+    lib:
+      haproxy:
+        chroot: "{{ lb_directory_mapping['var']['lib']['haproxy'] }}" #ok
+        pidfile: "{{ lb_directory_mapping['var']['lib']['haproxy'] }}/haproxy.pid" #ok
+        stats_socket: "{{ lb_directory_mapping['var']['lib']['haproxy'] }}/stats" #ok
+  system:
+    haproxy:
+      config: "{{ lb_sub_mapping['system']['haproxy'] }}/haproxy.cfg" #ok
+    keepalived:
+      config: "/etc/keepalived/keepalived.conf" #ok
+

@@ -1,0 +1,9 @@
+---
+- name: Prepare the host for management through Ansible
+  ansible.builtin.include_tasks: ansible/main.yml
+
+- name: Prepare the system
+  ansible.builtin.include_tasks: system/main.yml
+
+- name: Prepare the guest machines network
+  ansible.builtin.include_tasks: networking/main.yml

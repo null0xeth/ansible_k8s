@@ -1,0 +1,27 @@
+---
+- name: Check if kubernetes is already initialized
+  ansible.builtin.include_tasks: ../common/prerequisites/main.yml
+
+- name: Provision the first controlplane
+  #when: not kubernetes_initialized.stat.exists
+  block:
+    - name: Provision etcd certificates
+      #when: config['ha-mode']|bool
+      ansible.builtin.include_tasks: ../high_availability/main.yml
+
+    - name: "[Non-HA]: Create the kubeadm configuration file"
+      ansible.builtin.include_tasks: prerequisites/main.yml
+
+    - name: Initialize the kubernetes controlplane
+      ansible.builtin.include_tasks: deployment/main.yml
+
+    - name: "[HA]: Generate the controlplane join command"
+      #when: config['ha-mode']|bool
+      ansible.builtin.include_tasks: post_deployment/kubeadm/controlplane_join_cmd.yml
+
+    - name: "[Non-HA]: Check if the kubeconfig file exists"
+      ansible.builtin.include_tasks: ../common/dotkube/main.yml
+
+    - name: "[CNI]: Configure {{ config['cni'] }} as the cluster CNI"
+      when: config['cni'] == 'flannel'
+      ansible.builtin.include_tasks: "post_deployment/cni/{{ config['cni'] }}.yml"

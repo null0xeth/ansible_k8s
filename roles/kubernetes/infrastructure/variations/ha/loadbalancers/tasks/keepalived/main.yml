@@ -1,0 +1,103 @@
+---
+- name: Check if Keepalived is already installed
+  become: true
+  ansible.builtin.stat:
+    path: "{{ lb_sub_file_mappings['system']['keepalived']['config'] }}"
+  register: has_keepalived
+
+- name: Check if automake is installed
+  become: true
+  ansible.builtin.apt:
+    name:
+      - automake
+      - libssl-dev
+      - autoconf
+      - make
+      - build-essential
+      - pkg-config
+      - libxtables-dev
+      - libip4tc-dev
+      - libip6tc-dev
+      - libipset-dev
+      - libnl-3-dev
+      - libnl-genl-3-dev
+      - libssl-dev
+      - libmagic-dev
+      - libsnmp-dev
+      - libglib2.0-dev
+      - libpcre2-dev
+      - libnftnl-dev
+      - libmnl-dev
+      - libsystemd-dev
+      - libkmod-dev
+      - libnm-dev
+      - libsnmp40t64
+      - libipset13
+      - clang
+      - llvm
+    state: present
+
+- name: Remove directories for Keepalived
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+    - "{{ lb_sub_mapping['system']['keepalived'] }}"
+
+- name: Create directories for Keepalived
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    recurse: true
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+    - "{{ lb_sub_mapping['system']['keepalived'] }}"
+
+- name: Initialize Keepalived
+  block:
+    - name: Clone the Keepalived git repository
+      become: true
+      ansible.builtin.git:
+        repo: "https://github.com/acassen/keepalived.git"
+        dest: "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+        depth: 1
+
+    - name: Generate the automake and autoconf files
+      become: true
+      ansible.builtin.command: ./autogen.sh
+      args:
+        chdir: "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+
+    - name: Configure the build parameters
+      become: true
+      ansible.builtin.command: ./configure
+      args:
+        chdir: "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+
+    - name: Build Keepalived
+      become: true
+      community.general.make:
+        chdir: "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+
+    - name: Install keepalived
+      become: true
+      community.general.make:
+        chdir: "{{ lb_sub_mapping['tmp']['keepalived'] }}"
+        target: install
+      notify: enable keepalived
+
+    - name: Create the Keepalived config file
+      become: true
+      ansible.builtin.template:
+        src: "{{ lb_templates['keepalived'] }}"
+        dest: "{{ lb_sub_file_mappings['system']['keepalived']['config'] }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart keepalived

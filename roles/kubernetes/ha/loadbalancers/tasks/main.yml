@@ -1,6 +1,0 @@
----
-- name: Install keeppalived
-  ansible.builtin.include_tasks: keepalived/
-
-- name: Install happroxy
-  ansible.builtin.include_tasks: haproxy/
