@@ -8,7 +8,7 @@
       register: has_kubernetes
 
     - name: Add the kubernetes repository and install the appropriate packages
-      when: not has_kubernetes.stat.exists
+      #when: not has_kubernetes.stat.exists
       block:
         - name: Get kubernetes key and convert to .asc
           become: true

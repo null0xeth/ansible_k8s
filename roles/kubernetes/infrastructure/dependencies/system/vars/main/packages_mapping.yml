@@ -1,10 +1,15 @@
 ---
 common_base_packages:
+  - open-iscsi
+  - cryptsetup
+  - util-linux
+  - gawk
+  - nfs-common
+  - dmsetup
   # Proxmox - PIP
-  - python3-proxmoxer
+  #- python3-proxmoxer
   - python3-hvac
   # Other
-  - openvswitch-switch
   - net-tools
   # Core
   - git
@@ -15,32 +20,31 @@ common_base_packages:
   - jq
   - apt-transport-https
   - golang-go
-  - conntrack
+  #- conntrack
   - e2fsprogs
   - gnupg
-  - ebtables
-  - ipset
-  - iptables
+  #- ebtables
+  #- ipset
   - libseccomp2
   - openssl
   - psmisc
   - procps
   - ca-certificates
-  - cron
-  - default-mta
+  #- cron
+  #- default-mta
   - cryptsetup
   - golang-github-vishvananda-netlink-dev
-  - ipvsadm
-  - socat
+  #- ipvsadm
+  #- socat
   - rsync
   - socat
   - tar
   - python3.12-minimal
   - python3-apt
-  - python3-netaddr
-  - python3-netfilter
-  - python3-openssl
+  #- python3-netaddr
+  #- python3-netfilter
+  #- python3-openssl
   - python3-jsonpatch
-  - python3-kubernetes
-  - python3-github
+  #- python3-kubernetes
+  #- python3-github
   - software-properties-common

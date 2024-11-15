@@ -1,4 +1,12 @@
 ---
+- name: Fetch and register all etcd member ip addresses
+  ansible.builtin.set_fact:
+    etcd_ips: "{{ groups['etcd'] | map('extract', hostvars) | map(attribute='ansible_host') }}"
+
+- name: Register the clustercerts as a local fact
+  ansible.builtin.set_fact:
+    local_cluster_certs: "{{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'] }}"
+
 - name: Create the kubeadm-config file
   become: true
   ansible.builtin.template:

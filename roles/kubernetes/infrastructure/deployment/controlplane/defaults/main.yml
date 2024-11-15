@@ -3,5 +3,4 @@ role_name: kubernetes_controlplane
 role_template_dir: "{{ role_path }}/templates"
 
 templates:
-  kubeadmcfg_controlplane: "{{ role_template_dir }}/kubeadm.j2"
-
+  kubeadmcfg_controlplane: "{{ role_template_dir }}/v4.kubeadm.j2"

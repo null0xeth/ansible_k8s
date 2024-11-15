@@ -1,42 +1,45 @@
 ---
+# - name: Install all required dependencies
+#   hosts: all
+#   roles:
+#     - kubernetes/infrastructure/dependencies/system
+#     - kubernetes/infrastructure/dependencies/shell
+
 - name: Install all required dependencies
   hosts: all
   roles:
     - kubernetes/infrastructure/dependencies/system
     - kubernetes/infrastructure/dependencies/shell
-
-- name: Install all required dependencies
-  hosts: cluster_internal
-  roles:
     - kubernetes/infrastructure/dependencies/runtime
-
-- name: Install all required dependencies
-  hosts: loadbalancers
-  roles:
-    - kubernetes/infrastructure/variations/ha/loadbalancers
+# #
+# - name: Install all required dependencies
+#   hosts: loadbalancers
+#   roles:
+#     - kubernetes/infrastructure/dependencies/system
+#     - kubernetes/infrastructure/dependencies/shell
+#     - kubernetes/infrastructure/variations/ha/loadbalancers
 
 - name: Install all required dependencies
   hosts: etcd
   roles:
     - kubernetes/infrastructure/variations/ha/etcd
-
+#
 - name: Install all required dependencies
   hosts: controlplanes
   roles:
     - kubernetes/infrastructure/deployment/controlplane
-
+#
 - name: Install all required dependencies
   hosts: workers
   roles:
     - kubernetes/infrastructure/deployment/workers
-
 - name: Install all required dependencies
-  hosts: deployments
+  hosts: master01
   roles:
     - kubernetes/infrastructure/deployment/localhost
 
 - name: Assign utility roles
-  hosts: deployments
+  hosts: master01
   roles:
     - kubernetes/tooling/helm
     - kubernetes/tooling/krew

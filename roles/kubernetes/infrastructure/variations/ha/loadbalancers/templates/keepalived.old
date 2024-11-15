@@ -1,0 +1,42 @@
+global_defs {
+  notification_email {
+  }
+  router_id LVS_DEVEL
+  vrrp_skip_check_adv_addr
+  vrrp_garp_interval 0
+  vrrp_gna_interval 0
+}
+
+vrrp_script chk_haproxy {
+  script "/usr/bin/killall -0 haproxy"
+  interval 2
+  weight 2
+}
+
+vrrp_instance haproxy-vip {
+  state BACKUP
+  priority 100
+  interface "{{ config['vip']['interface'] }}"
+  virtual_router_id 60
+  advert_int 1
+  authentication {
+    auth_type PASS
+    auth_pass 1111
+  }
+  unicast_src_ip {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}      # The IP address of this machine
+  unicast_peer {
+    {% if inventory_hostname == groups['loadbalancers'][0] %}
+      {{ hostvars[groups['loadbalancers'][1]]['ansible_default_ipv4']['address'] }} {#192.168.1.174                         # The IP address of peer machines#}
+    {% else %}
+      {{ hostvars[groups['loadbalancers'][0]]['ansible_default_ipv4']['address'] }} {# 192.168.1.133 #}
+    {% endif %}
+  }
+
+  virtual_ipaddress {
+    {{ config['vip']['cidr'] }}
+  }
+
+  track_script {
+    chk_haproxy
+  }
+}

@@ -1,15 +1,10 @@
 ---
+### CHECKS ########
 - name: Check if kubernetes is already initialized
   become: true
   ansible.builtin.stat:
-    path: "{{ sub_file_mappings['system']['kubernetes']['core']['adminconf'] }}"
+    path: "{{ sub_file_mappings['system']['kubernetes']['core']['kubelet'] }}"
   register: kubernetes_initialized
-
-- name: Check if a kubeadm config file is already present
-  become: true
-  ansible.builtin.stat:
-    path: "{{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
-  register: kubeadmcfg
 
 - name: Create the kubernetes certificate dirs
   become: true

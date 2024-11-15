@@ -15,7 +15,7 @@
 ### CRUD OPS ########
 - name: Create the kubernetes certificate dirs
   become: true
-  when: kubernetes_initialized.stat.exists
+  when: not kubernetes_initialized.stat.exists
   ansible.builtin.file:
     path: "{{ mapped_directories['system']['kubernetes']['pki']['etcd'] }}"
     recurse: true

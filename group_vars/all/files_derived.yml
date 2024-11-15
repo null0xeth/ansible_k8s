@@ -12,17 +12,18 @@ sub_file_mappings:
     python:
       externally_managed: "{{ mapped_directories['system']['python']['install_dir'] }}/EXTERNALLY-MANAGED"
     golang:
-      binary:  "{{ mapped_directories['system']['golang'] }}/bin"
+      binary: "{{ mapped_directories['system']['golang'] }}/bin"
     modules_load_d:
       k8s_conf: "{{ sub_mapping['system']['modules_load_d'] }}/k8s.conf"
     sysctl_d:
-      k8s_conf: "{{ sub_mapping['system']['sysctl_d'] }}/k8s.conf"
+      k8s_conf: "{{ sub_mapping['system']['sysctl_d'] }}/99-k8s.conf"
     sudoers_d:
       passwordless_sudo: "{{ sub_mapping['system']['sudoers_d'] }}/dont-prompt-ubuntu_user-for-sudo-password"
     kubernetes:
       core:
         kubeadm: "{{ global_home_dir }}/kubeadm-config.yaml" # ok
         adminconf: "{{ sub_mapping['system']['kubernetes'] }}/admin.conf" #ok
+        kubelet: "/etc/kubernetes/kubelet.conf"
   home:
     kube:
       config: "{{ sub_mapping['home']['kube'] }}/config" #ok

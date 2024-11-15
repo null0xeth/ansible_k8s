@@ -7,8 +7,8 @@
 global_high_availability_mode: true
 global_controlplane_hosts: "{{ lookup('inventory_hostnames', 'controlplanes', wantlist=True) }}"
 ## CLUSTER - NETWORKING - CNI:
-global_config_cni: flannel
-#global_config_cni_pod_cidr:
+global_config_cni: cilium
+global_config_cni_pod_cidr: 10.244.0.0/16
 
 ## CLUSTER - COMPONENTS - RUNTIME:
 global_config_runtime: containerd

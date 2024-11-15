@@ -1,14 +1,21 @@
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
-certificateKey: "68c490d7499c8f794d6a80fbb330f352db1491f2dba474906fcdd48cf9348585"
+localAPIEndpoint:
+  advertiseAddress: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+nodeRegistration:
+  kubeletExtraArgs:
+    "node-ip": "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}" 
 skipPhases:
   - preflight
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
+kubernetesVersion: v1.31.0
 controlPlaneEndpoint: "k8s.honker.dev:6443" 
-kubernetesVersion: "v1.31.2"
+networking:
+    serviceSubnet: "10.96.0.0/16"                   # IPv4 service subnets
+    podSubnet: "10.244.0.0/16"
 etcd:
   external:
     endpoints:
@@ -21,19 +28,26 @@ etcd:
     keyFile: {{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][2] }}
 controllerManager:
   extraArgs:
-    allocate-node-cidrs: "true"
+    "cluster-cidr": "10.244.0.0/16"
+    "service-cluster-ip-range": "10.96.0.0/16"
+    "node-cidr-mask-size-ipv4": "24"
+    "allocate-node-cidrs": "true"
 apiServer:
+  certSANs:
+    - "192.168.155.69"
+    - "k8s.honker.dev"
+    - "192.168.155.90"
+    - "192.168.155.132"
+    - "192.168.155.106"
   extraArgs:
-    enable-aggregator-routing: "true"
-    allow-privileged: "true"
-    enable-bootstrap-token-auth: "true"
-    advertise-address: "192.168.155.69"
-    bind-address: "0.0.0.0"
-
-networking:
-  podSubnet: {{ cluster_cni[config['cni']]['pod_network'] | default('10.10.0.0/16') }}
-
+    "service-cluster-ip-range": "10.96.0.0/16"
+    "enable-aggregator-routing": "true"
+    "allow-privileged": "true"
+    "enable-bootstrap-token-auth": "true"
 clusterName: "honklabs"
+encryptionAlgorithm: ECDSA-P256
+proxy:
+  disabled: true
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
@@ -41,5 +55,4 @@ containerRuntimeEndpoint: unix:///var/run/containerd/containerd.sock
 serverTLSBootstrap: true
 cgroupDriver: systemd
 rotateCertificates: true
-staticPodPath: /etc/kubernetes/manifests
 

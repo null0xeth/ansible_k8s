@@ -1,3 +1,54 @@
+# - name: Prepare {{ groups['etcd'][0] }}
+#   block:
+#     - name: Check if the SSH key is already present
+#       become: true
+#       ansible.builtin.stat:
+#         path: "{{ primary_ssh_path }}"
+#       register: has_ssh_key
+#
+#     - name: Generate SSH keys for {{ groups['etcd'][0] }}
+#       when: not has_ssh_key.stat.exists
+#       block:
+#         - name: Generate SSH keys for {{ groups['etcd'][0] }}
+#           community.crypto.openssh_keypair:
+#             path: "{{ primary_ssh_path }}"
+#             type: ed25519
+#             comment: "{{ global_primary_user }}@{{ inventory_hostname }}"
+#           register: etcd_keys
+#
+#         - name: Register SSH key if generated
+#           set_fact:
+#             etcd_key: "{{ etcd_keys.public_key }}"
+#
+#     - name: Set existing SSH key if present
+#       when: has_ssh_key.stat.exists
+#       ansible.builtin.slurp:
+#         src: "{{ primary_ssh_path }}.pub"
+#       register: existing_key
+#
+#     - name: Register existing SSH key as a fact
+#       when: has_ssh_key.stat.exists
+#       set_fact:
+#         etcd_key: "{{ existing_key.content | b64decode }}"
+#
+#     - name: Set SSH key globally
+#       ansible.builtin.set_fact:
+#         etcd_key: "{{ etcd_key }}"
+#       delegate_to: "{{ item }}"
+#       delegate_facts: true
+#       loop: "{{ etcd_group_hosts + [ global_controlplane_hosts[0] ] }}"
+#
+#     - name: Debug - Check if etcd_key is set
+#       ansible.builtin.debug:
+#         msg: "The SSH key for etcd is: {{ etcd_key }}"
+#
+#     - name: Add SSH public key to nodes
+#       loop: "{{ etcd_group_hosts + [ global_controlplane_hosts[0] ] }}"
+#       delegate_to: "{{ item }}"
+#       ansible.posix.authorized_key:
+#         user: "{{ global_primary_user }}"
+#         state: present
+#         key: "{{ etcd_key }}"
 ---
 - name: "Prepare {{ groups['etcd'][0] }}"
   block:

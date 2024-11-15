@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks: ../common/prerequisites/main.yml
 
 - name: Provision the first controlplane
-  #when: not kubernetes_initialized.stat.exists
+  when: not kubernetes_initialized.stat.exists
   block:
     - name: Provision etcd certificates
       #when: config['ha-mode']|bool
@@ -11,6 +11,11 @@
 
     - name: "[Non-HA]: Create the kubeadm configuration file"
       ansible.builtin.include_tasks: prerequisites/main.yml
+
+    - name: Ensure kubelet is reloaded g
+      become: true
+      ansible.builtin.shell: |
+        sudo systemctl daemon-reload && sudo systemctl restart kubelet
 
     - name: Initialize the kubernetes controlplane
       ansible.builtin.include_tasks: deployment/main.yml

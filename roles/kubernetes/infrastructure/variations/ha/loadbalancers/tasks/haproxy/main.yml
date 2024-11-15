@@ -12,7 +12,6 @@
         state: present
         update_cache: true
         force_apt_get: true
-      notify: enable haproxy
 
     - name: "Ensure group haproxy exists"
       become: true
@@ -60,4 +59,6 @@
         owner: haproxy
         group: haproxy
         mode: "0644"
-      notify: restart haproxy
+      notify:
+        - enable haproxy
+        - restart haproxy

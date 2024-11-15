@@ -21,9 +21,7 @@
 
 - name: Dummy
   become: true
-  ansible.builtin.shell: echo whoami
-  notify:
-    - restart kubelet
+  ansible.builtin.shell: sudo systemctl daemon-reload && sudo systemctl restart kubelet
 
 - name: Generate certificates for all etcd members
   ansible.builtin.include_tasks: certificates.yml

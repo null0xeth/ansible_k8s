@@ -8,6 +8,7 @@
 - name: Dummy
   ansible.builtin.shell: echo whoami
   notify:
+    - daemon_reload
     - enable haproxy
     - enable keepalived
     - restart haproxy

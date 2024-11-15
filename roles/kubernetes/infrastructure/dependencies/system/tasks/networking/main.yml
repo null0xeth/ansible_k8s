@@ -24,3 +24,10 @@
         file: /etc/cloud/templates/hosts.debian.tmpl,
         entry: "{{ config['vip']['ipv4'] }} {{ config['vip']['dns'] }} {{ config['vip']['dns'] }}",
       }
+# - name: Create the calico nm override file
+#   #when: not has_k8sconf.stat.exists
+#   become: true
+#   ansible.builtin.template:
+#     src: templates/nm.calico.conf.j2
+#     dest: "/etc/NetworkManager/conf.d/calico.conf"
+#     mode: "0644"

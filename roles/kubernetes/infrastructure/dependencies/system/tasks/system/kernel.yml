@@ -13,7 +13,7 @@
 
 # Modules_load
 - name: Create the k8s.conf file in modules-load
-  when: not has_k8sconf.stat.exists
+  #when: not has_k8sconf.stat.exists
   become: true
   ansible.builtin.template:
     src: templates/kernel/modules_load_d/k8s.conf.j2
@@ -32,10 +32,10 @@
     name: overlay
     state: present
 
-# SYSCTL
+    # SYSCTL
 - name: Create the k8s.conf file in sysctl.d
   become: true
-  when: not has_k8s_sysctl.stat.exists
+  #when: not has_k8s_sysctl.stat.exists
   ansible.builtin.template:
     src: templates/kernel/sysctl_d/k8s.conf.j2
     dest: "{{ sub_file_mappings['system']['sysctl_d']['k8s_conf'] }}"
@@ -53,7 +53,7 @@
 - name: Enable ipv6 bridge networking
   become: true
   ansible.posix.sysctl:
-    name: net.bridge.bridge-nf-call-ip6tables
+    name: net.ipv4.ip_nonlocal_bind
     value: "1"
     sysctl_set: true
     state: present
@@ -70,5 +70,22 @@
 
 - name: Apply sysctl
   become: true
-  ansible.builtin.shell: |
-    sysctl --system
+  ansible.builtin.shell: sysctl --system
+
+- name: kill mfers
+  become: true
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    masked: true
+    state: stopped
+  loop:
+    - multipathd.service
+
+- name: start mfers
+  become: true
+  ansible.builtin.systemd_service:
+    name: iscsid
+    enabled: true
+    masked: false
+    state: started
