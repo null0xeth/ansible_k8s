@@ -1,0 +1,17 @@
+---
+- name: Check if kubernetes is already initialized
+  ansible.builtin.include_tasks: ../common/prerequisites/main.yml
+
+- name: Provision the first controlplane
+  #when: not kubernetes_initialized.stat.exists
+  block:
+    - name: "[Non-HA]: Create the kubeadm configuration file"
+      ansible.builtin.include_tasks: ../primary/prerequisites/main.yml
+
+    - name: Initialize the secondary controlplane
+      become: true
+      ansible.builtin.shell: "{{ kubernetes_join_command }}"
+      register: kubeadm_join_output
+
+    - name: "[Non-HA]: Check if the kubeconfig file exists"
+      ansible.builtin.include_tasks: ../common/dotkube/main.yml

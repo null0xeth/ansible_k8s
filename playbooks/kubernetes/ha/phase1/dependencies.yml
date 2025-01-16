@@ -1,0 +1,17 @@
+---
+- name: Install all required dependencies
+  hosts: all
+  tasks:
+    - name: Install system dependencies
+      ansible.builtin.include_role:
+        name: kubernetes/infrastructure/dependencies/system
+    - name: Install shell dependencies
+      ansible.builtin.include_role:
+        name: kubernetes/infrastructure/dependencies/shell
+
+- name: Install all required dependencies
+  hosts: cluster_internal
+  tasks:
+    - name: Install runtime dependencies
+      ansible.builtin.include_role:
+        name: kubernetes/infrastructure/dependencies/runtime

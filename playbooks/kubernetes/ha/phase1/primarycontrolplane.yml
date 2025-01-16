@@ -1,0 +1,21 @@
+---
+- name: Install all required dependencies
+  hosts: controlplanes
+  tasks:
+    - name: Deploy the primary controlplane
+      ansible.builtin.include_role:
+        name: kubernetes/infrastructure/deployment/controlplane/primary
+
+- name: Install all required dependencies
+  hosts: master01
+  tasks:
+    - name: Deploy the local controller
+      ansible.builtin.include_role:
+        name: kubernetes/infrastructure/deployment/localhost
+#
+- name: Assign utility roles
+  hosts: master01
+  tasks:
+    - name: Deploy Helm
+      ansible.builtin.include_role:
+        name: kubernetes/tooling/helm

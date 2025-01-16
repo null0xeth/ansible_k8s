@@ -1,0 +1,4 @@
+---
+- name: "[HA]: Generate the controlplane join command"
+  #when: config['ha-mode']|bool
+  ansible.builtin.include_tasks: post_deployment/kubeadm/controlplane_join_cmd.yml

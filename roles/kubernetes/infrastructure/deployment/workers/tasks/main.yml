@@ -3,7 +3,7 @@
   ansible.builtin.include_tasks: prerequisites/main.yml
 
 - name: Provision the worker nodes
-  when: not kubernetes_initialized.stat.exists
+  #when: not kubernetes_initialized.stat.exists
   block:
     - name: Print the worker node join command
       delegate_to: "{{ groups['controlplanes'][0] }}"
@@ -21,5 +21,5 @@
 
     - name: Initialize the worker node
       become: true
-      ansible.builtin.shell: "{{ worker_join_command }}"
+      ansible.builtin.shell: "sudo {{ worker_join_command }} --ignore-preflight-errors=all"
       register: worker_join_output

@@ -11,6 +11,9 @@
   ansible.builtin.copy:
     dest: "{{ sub_file_mappings['system']['sudoers_d']['passwordless_sudo'] }}"
     content: "{{ global_primary_user }} ALL=(ALL) NOPASSWD:ALL"
+    owner: "root"
+    group: "root"
+    mode: "0440"
 
 - name: enable SSH forwarding for sudo
   become: true
@@ -18,3 +21,33 @@
     dest: "{{ file_mappings['system']['sudoers'] }}"
     insertafter: '^#?\s*Defaults\s+env_keep\b'
     line: 'Defaults    env_keep += "SSH_AUTH_SOCK"'
+
+- name: Ensure PermitRootLogin is set to yes
+  become: true
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PermitRootLogin"
+    line: "PermitRootLogin yes"
+    state: present
+
+- name: Restart SSH service
+  become: true
+  service:
+    name: sshd
+    state: restarted
+
+- name: Ensure root SSH directory exists
+  become: true
+  file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Add SSH public key to root's authorized_keys
+  become: true
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ lookup('file', '/home/null0x/.ssh/ansible_ed25519.pub') }}"

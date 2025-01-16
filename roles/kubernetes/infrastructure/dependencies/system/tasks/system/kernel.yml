@@ -32,7 +32,30 @@
     name: overlay
     state: present
 
+- name: Load dm_crypt kernel module
+  become: true
+  community.general.modprobe:
+    name: dm_crypt
+    state: present
     # SYSCTL
+
+- name: Load all other kernel modules
+  become: true
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    # - bpf
+    # - xdp
+    - cls_bpf
+    - act_bpf
+    - vfio_pci
+    - uio_pci_generic
+    - nvme-tcp
+    - iscsi_tcp
+    - ip_set
+    - xt_set
+
 - name: Create the k8s.conf file in sysctl.d
   become: true
   #when: not has_k8s_sysctl.stat.exists
@@ -46,6 +69,15 @@
   ansible.posix.sysctl:
     name: net.bridge.bridge-nf-call-iptables
     value: "1"
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Set hugepages
+  become: true
+  ansible.posix.sysctl:
+    name: vm.nr_hugepages
+    value: "1024"
     sysctl_set: true
     state: present
     reload: true

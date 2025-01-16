@@ -6,6 +6,13 @@ common_base_packages:
   - gawk
   - nfs-common
   - dmsetup
+  - clang
+  - llvm
+  - libbpf-dev
+  - nftables
+  - openvswitch-switch-dpdk
+  - openvswitch-switch
+  - openvswitch-common
   # Proxmox - PIP
   #- python3-proxmoxer
   - python3-hvac
@@ -39,7 +46,8 @@ common_base_packages:
   - rsync
   - socat
   - tar
-  - python3.12-minimal
+  - python3.11-minimal
+  #- python3.12-minimal
   - python3-apt
   #- python3-netaddr
   #- python3-netfilter
@@ -48,3 +56,5 @@ common_base_packages:
   #- python3-kubernetes
   #- python3-github
   - software-properties-common
+  - linux-modules-extra-6.8.0-51-generic
+  #- linux-modules-extra-6.11.0-13-generic

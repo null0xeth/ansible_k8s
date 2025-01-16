@@ -1,0 +1,97 @@
+---
+loadbalancers:
+  hosts:
+    
+    loadbalancer01:
+      ansible_host: "192.168.199.79" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    loadbalancer02:
+      ansible_host: "192.168.199.145" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+etcd:
+  hosts:
+    
+    etcd01:
+      ansible_host: "192.168.199.176" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    etcd02:
+      ansible_host: "192.168.199.91" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    etcd03:
+      ansible_host: "192.168.199.60" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+controlplanes:
+  hosts:
+    
+    master01:
+      ansible_host: "192.168.199.167" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    master02:
+      ansible_host: "192.168.199.30" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    master03:
+      ansible_host: "192.168.199.73" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+
+workers:
+  hosts:    
+    worker01:
+      ansible_host: "192.168.199.206" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    worker02:
+      ansible_host: "192.168.199.189" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    worker03:
+      ansible_host: "192.168.199.225" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    worker04:
+      ansible_host: "192.168.199.67" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    worker05:
+      ansible_host: "192.168.199.241" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+kubernetes:
+  children:
+    ha:
+      children:
+        loadbalancers:
+        etcd:  
+    non_ha:
+      children:
+        controlplanes:
+        workers:
+    deployments:
+      children:
+        helm:
+          children:
+            controlplanes:
+    cluster_internal:
+      children:
+        controlplanes:
+        workers:
+        etcd:

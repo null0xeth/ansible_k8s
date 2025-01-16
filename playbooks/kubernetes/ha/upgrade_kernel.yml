@@ -1,0 +1,65 @@
+---
+- name: Upgrade to latest mainline kernel
+  hosts: all
+  tasks:
+    # - name: Add cappelikan repo
+    #   become: true
+    #   ansible.builtin.apt_repository:
+    #     repo: "ppa:cappelikan/ppa"
+    #     state: present
+
+    - name: Update and upgrade APT
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: true
+
+    - name: Update and upgrade APT
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        name: xz-utils
+        state: present
+
+    - name: Create dpkg package dir in /root
+      become: true
+      ansible.builtin.file:
+        path: /root/kernel
+        state: directory
+        mode: "0755"
+
+    # - name: Install mainline
+    #   become: true
+    #   ansible.builtin.apt:
+    #     name: mainline
+    #     state: present
+    #
+    # - name: Execute mainline command
+    #   become: true
+    #   ansible.builtin.command: mainline install-latest
+    #
+    - name: Fetch latest mainline kernel deb packages
+      become: true
+      ansible.builtin.get_url:
+        url: "https://kernel.ubuntu.com/mainline/v6.12/amd64/{{ item }}"
+        dest: "/root/kernel/{{ item }}"
+        mode: "0644"
+      loop:
+        - "linux-headers-6.12.0-061200-generic_6.12.0-061200.202411220723_amd64.deb"
+        - "linux-headers-6.12.0-061200_6.12.0-061200.202411220723_all.deb"
+        - "linux-image-unsigned-6.12.0-061200-generic_6.12.0-061200.202411220723_amd64.deb"
+        - "linux-modules-6.12.0-061200-generic_6.12.0-061200.202411220723_amd64.deb"
+
+    - name: Install the latest kernel packages
+      become: true
+      ansible.builtin.apt:
+        deb: "/root/kernel/{{ item }}"
+      loop:
+        - "linux-modules-6.11.0-061100rc6-generic_6.11.0-061100rc6.202409010834_amd64.deb"
+        - "linux-image-unsigned-6.11.0-061100rc6-generic_6.11.0-061100rc6.202409010834_amd64.deb"
+        - "linux-headers-6.11.0-061100rc6_6.11.0-061100rc6.202409010834_all.deb"
+        - "linux-headers-6.11.0-061100rc6-generic_6.11.0-061100rc6.202409010834_amd64.deb"
+
+    - name: Reboot the machine
+      become: true
+      ansible.builtin.reboot:

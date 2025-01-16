@@ -1,0 +1,7 @@
+---
+- name: Install all required dependencies
+  hosts: workers
+  tasks:
+    - name: Deploy the worker nodes
+      ansible.builtin.include_role:
+        name: kubernetes/infrastructure/deployment/workers

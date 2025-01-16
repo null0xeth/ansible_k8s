@@ -1,0 +1,10 @@
+---
+- name: Configure Flannel networking.
+  become: true
+  kubernetes.core.k8s:
+    kubeconfig: "{{ sub_file_mappings['home']['kube']['config'] }}"
+    state: present
+    src: "{{ cluster_cni['flannel']['manifest_url'] }}"
+    apply: true
+
+

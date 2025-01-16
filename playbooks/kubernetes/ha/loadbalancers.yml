@@ -1,0 +1,7 @@
+---
+- name: Install all required dependencies
+  hosts: loadbalancers
+  roles:
+    # - kubernetes/infrastructure/dependencies/system
+    # - kubernetes/infrastructure/dependencies/shell
+    - kubernetes/infrastructure/variations/ha/loadbalancers

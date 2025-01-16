@@ -4,6 +4,7 @@
 # Please edit `config.yml` and not this file
 etcd_group_hosts: "{{ lookup('inventory_hostnames', 'etcd', wantlist=True) }}"
 
+# https://github.com/containernetworking/plugins/releases/download/v1.6.2/cni-plugins-linux-amd64-v1.6.2.tgz
 kube_source_map:
   containerd: "https://github.com/containerd/containerd/releases/download/{{ pinned_binaries['containerd'] }}/containerd-{{ pinned_binaries['containerd'] | regex_replace('^v', '') }}-linux-amd64.tar.gz"
   containerd_service: "https://raw.githubusercontent.com/containerd/containerd/main/containerd.service"
@@ -37,4 +38,3 @@ systemd:
     download: "{{ kube_source_map['containerd_service'] }}"
     install_dir: "{{ sub_directory_mapping['usr']['local']['lib']['systemd'] }}"
     service_path: "{{ sub_directory_mapping['usr']['local']['lib']['systemd'] }}/containerd.service"
-

@@ -1,0 +1,8 @@
+---
+cp_sub_file_mappings:
+  system:
+    kubernetes:
+      cluster_certs:
+        - /etc/kubernetes/pki/etcd/ca.crt
+        - /etc/kubernetes/pki/apiserver-etcd-client.crt
+        - /etc/kubernetes/pki/apiserver-etcd-client.key

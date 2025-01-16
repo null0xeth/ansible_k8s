@@ -1,0 +1,29 @@
+---
+- name: Fetch and register all etcd member ip addresses
+  ansible.builtin.set_fact:
+    etcd_ips: "{{ groups['etcd'] | map('extract', hostvars) | map(attribute='ansible_host') }}"
+
+- name: Register the clustercerts as a local fact
+  ansible.builtin.set_fact:
+    local_cluster_certs: "{{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'] }}"
+
+- name: Ensure the etcd directory exists on the destination node (master)
+  become: true
+  ansible.builtin.file:
+    path: "/etc/kubernetes/pki/etcd"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: "Copy etcd certs from etcd01 to master01"
+  become: true
+  loop: "{{ local_cluster_certs }}"
+  ansible.posix.synchronize:
+    src: "{{ item }}"
+    dest: "{{ item }}"
+    set_remote_user: true
+    private_key: ~/.ssh/ansible_ed25519
+    perms: true
+    mode: push
+  delegate_to: "{{ groups['etcd'][0] }}"

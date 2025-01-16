@@ -1,0 +1,7 @@
+---
+- name: Install all required dependencies
+  hosts: etcd
+  tasks:
+    - name: Deploy ETCD
+      ansible.builtin.include_role:
+        name: kubernetes/infrastructure/variations/ha/etcd

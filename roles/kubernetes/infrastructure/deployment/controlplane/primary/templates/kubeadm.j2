@@ -1,0 +1,59 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+nodeRegistration:
+  kubeletExtraArgs:
+    "node-ip": "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}" 
+skipPhases:
+  - preflight
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: v1.31.0
+controlPlaneEndpoint: "k8s.honker.dev:6443" 
+networking:
+    serviceSubnet: "10.96.0.0/16"                   # IPv4 service subnets
+    podSubnet: "10.244.0.0/16"
+etcd:
+  external:
+    endpoints:
+    {% for etcdnode in etcd_ips %}
+    - https://{{ etcdnode }}:2379
+    {% endfor %}
+
+    caFile: {{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][0] }}
+    certFile: {{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][1] }}
+    keyFile: {{ cp_sub_file_mappings['system']['kubernetes']['cluster_certs'][2] }}
+controllerManager:
+  extraArgs:
+    "cluster-cidr": "10.244.0.0/16"
+    "service-cluster-ip-range": "10.96.0.0/16"
+    "node-cidr-mask-size-ipv4": "24"
+    "allocate-node-cidrs": "true"
+apiServer:
+  certSANs:
+    {% for master in master_ips %}
+    -{{ master }}
+    {% endfor %}
+    - "192.168.199.69"
+    - "k8s.honker.dev"
+
+  extraArgs:
+    "service-cluster-ip-range": "10.96.0.0/16"
+    "enable-aggregator-routing": "true"
+    "allow-privileged": "true"
+    "enable-bootstrap-token-auth": "true"
+clusterName: "honklabs"
+encryptionAlgorithm: ECDSA-P256
+proxy:
+  disabled: true
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+containerRuntimeEndpoint: unix:///var/run/containerd/containerd.sock
+serverTLSBootstrap: true
+cgroupDriver: systemd
+rotateCertificates: true
+

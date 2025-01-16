@@ -1,0 +1,10 @@
+---
+kubernetes_commands:
+  kubeadm:
+    pull_images: "kubeadm config images pull --config {{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }}"
+    print_certkey: "sudo echo $(sudo kubeadm init phase upload-certs --upload-certs --config {{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }} | grep -vw -e certificate -e Namespace )"
+    init:
+      controlplane: "kubeadm init --config {{ sub_file_mappings['system']['kubernetes']['core']['kubeadm'] }} --ignore-preflight-errors=all --upload-certs"
+    generate:
+      join_worker: "kubeadm token create --print-join-command"
+      join_plane: "kubeadm token create --print-join-command --certificate-key "

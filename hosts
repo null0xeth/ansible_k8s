@@ -1,66 +1,85 @@
 ---
-# loadbalancers:
-#   hosts:
-#
-#     # loadbalancer01:
-#     #   ansible_host: "192.168.155.184" 
-#     #   ansible_user: "null0x" 
-#     #   ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
-#     #
-#     # loadbalancer02:
-#     #   ansible_host: "192.168.155.250" 
-#     #   ansible_user: "null0x" 
-#     #   ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
-#
+loadbalancers:
+  hosts:
+    
+    os-loadbalancer01:
+      ansible_host: "192.168.199.203" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    os-loadbalancer02:
+      ansible_host: "192.168.199.220" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
 etcd:
   hosts:
+    
     etcd01:
-      ansible_host: "192.168.155.118" 
+      ansible_host: "192.168.199.165" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
-
+    
     etcd02:
-      ansible_host: "192.168.155.237" 
+      ansible_host: "192.168.199.25" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
-
+    
     etcd03:
-      ansible_host: "192.168.155.223" 
+      ansible_host: "192.168.199.23" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+templates:
+  hosts:
+    
+    os-worker01:
+      ansible_host: "192.168.199.28" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
     
 controlplanes:
   hosts:
     
-    master01:
-      ansible_host: "192.168.155.90" 
+    os-controlplane01:
+      ansible_host: "192.168.199.114" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
     
-    master02:
-      ansible_host: "192.168.155.132" 
+    os-controlplane02:
+      ansible_host: "192.168.199.235" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
     
-    master03:
-      ansible_host: "192.168.155.106" 
+    os-controlplane03:
+      ansible_host: "192.168.199.178" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
-    
-workers:
+    workers:
   hosts:
-    worker01:
-      ansible_host: "192.168.155.208" 
+    
+    os-worker01:
+      ansible_host: "192.168.199.42" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
     
-    worker02:
-      ansible_host: "192.168.155.97" 
+    os-worker02:
+      ansible_host: "192.168.199.22" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
     
-    worker03:
-      ansible_host: "192.168.155.135" 
+    os-worker03:
+      ansible_host: "192.168.199.223" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    os-worker04:
+      ansible_host: "192.168.199.166" 
+      ansible_user: "null0x" 
+      ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
+    
+    os-worker05:
+      ansible_host: "192.168.199.226" 
       ansible_user: "null0x" 
       ansible_ssh_private_key_file: "~/.ssh/ansible_ed25519"
     
@@ -68,12 +87,13 @@ kubernetes:
   children:
     ha:
       children:
-        #loadbalancers:
-        etcd:
+        loadbalancers:
+        etcd:  
     non_ha:
       children:
         controlplanes:
         workers:
+        templates:
     deployments:
       children:
         helm:
@@ -81,12 +101,7 @@ kubernetes:
             controlplanes:
     cluster_internal:
       children:
+        controlplanes:
+        workers:
         etcd:
-        controlplanes:
-        workers:
-    primary:
-      children:
-        controlplanes:
-        workers:
-        
-#etcd:
+        templates:

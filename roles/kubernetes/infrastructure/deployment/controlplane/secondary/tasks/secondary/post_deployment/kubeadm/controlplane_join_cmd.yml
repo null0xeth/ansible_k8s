@@ -1,0 +1,15 @@
+---
+- name: Fetch the kubernetes certificate key
+  delegate_to: master01
+  ansible.builtin.shell: "{{ kubernetes_commands['kubeadm']['print_certkey'] }}"
+  register: kube_cert_key
+
+- name: Print control plane join command
+  delegate_to: master01
+  become: true
+  ansible.builtin.command: "{{ kubernetes_commands['kubeadm']['generate']['join_plane'] }}{{ kube_cert_key.stdout }}"
+  register: control_plane_join_command
+
+- name: Set the control plane join command globally.
+  ansible.builtin.set_fact:
+    kubernetes_join_command: "{{ control_plane_join_command.stdout }}"

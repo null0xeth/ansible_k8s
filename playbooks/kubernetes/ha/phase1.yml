@@ -1,0 +1,8 @@
+---
+#- import_playbook: reset.yml
+#- import_playbook: upgrade_kernel.yml
+- import_playbook: phase1/dependencies.yml
+- import_playbook: loadbalancers.yml
+- import_playbook: phase1/etcd.yml
+- import_playbook: phase1/primarycontrolplane.yml
+- import_playbook: phase2/workers.yml
